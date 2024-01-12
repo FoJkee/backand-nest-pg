@@ -1,51 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { UserModelView } from './dto/user.model';
+import { UserModelView, UserModelResult } from '../dto/user.model';
+import { UserQueryDto } from '../dto/user.dto';
+import { PaginationView } from '../../../setting/pagination.model';
 
 @Injectable()
 export class UserRepoSql {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
-  // async getUsers(userQueryDto: UserQueryDto) {
-  //
-  //   const { sortBy, pageSize, pageNumber, sortDirection } =
-  //     pagination(userQueryDto);
-  //
-  //   const searchEmailTerm = userQueryDto.searchEmailTerm;
-  //   const searchLoginTerm = userQueryDto.searchLoginTerm;
-  //   const pageSkip = +pageSize * (+pageNumber - 1);
-  //   const orderBy = `"${sortBy}" ${sortDirection}`;
-  //
-  //   const users = await this.dataSource.query(
-  //     `
-  //       select u."id", u."login", u."email", u."createdAt"
-  //       from "users" u
-  //       where u."login" ILIKE $1 OR u."email" ILIKE $2
-  //       ORDER BY ${orderBy}
-  //       LIMIT $3 OFFSET $4
-  //       `,
-  //
-  //     [`%${searchLoginTerm}%`, `%${searchEmailTerm}%`, pageSize, pageSkip],
-  //   );
-  //   const userCount = await this.dataSource.query(
-  //     `
-  //       select count(*)
-  //     from public."users" u
-  //     where u."email" ILIKE $1 OR u."login" ILIKE $2
-  //   `,
-  //     [`%${searchEmailTerm}%`, `%${searchLoginTerm}%`],
-  //   );
-  //   const count = +userCount[0].count;
-  //
-  //   return {
-  //     pagesCount: Math.ceil(count / pageSize),
-  //     page: pageNumber,
-  //     pageSize: pageSize,
-  //     totalCount: count,
-  //     items: users,
-  //   };
-  // }
+  async getUsers(
+    userQueryDto: UserQueryDto,
+  ): Promise<PaginationView<UserModelResult[]>> {
+    const searchEmailTerm = userQueryDto.searchEmailTerm;
+    const searchLoginTerm = userQueryDto.searchLoginTerm;
+
+    const pageSkip = +userQueryDto.pageSize * (+userQueryDto.pageNumber - 1);
+    const orderBy = `"${userQueryDto.sortBy}" ${userQueryDto.sortDirection}`;
+
+    const users = await this.dataSource.query(
+      `
+        select u."id", u."login", u."email", u."createdAt"
+        from public."users" u
+        where u."login" ILIKE $1 OR u."email" ILIKE $2
+        ORDER BY ${orderBy}
+        LIMIT $3 OFFSET $4
+        `,
+
+      [
+        `%${searchLoginTerm}%`,
+        `%${searchEmailTerm}%`,
+        userQueryDto.pageSize,
+        pageSkip,
+      ],
+    );
+    const userCount = await this.dataSource.query(
+      `
+        select count(*)
+      from public."users" u
+      where u."email" ILIKE $1 OR u."login" ILIKE $2
+    `,
+      [`%${searchEmailTerm}%`, `%${searchLoginTerm}%`],
+    );
+    const count = +userCount[0].count;
+
+    return {
+      pagesCount: Math.ceil(count / userQueryDto.pageSize),
+      page: userQueryDto.pageNumber,
+      pageSize: userQueryDto.pageSize,
+      totalCount: count,
+      items: users,
+    };
+  }
 
   async createUser(newUser: UserModelView) {
     const createUser = await this.dataSource.query(
@@ -74,7 +80,7 @@ export class UserRepoSql {
     const user = await this.dataSource.query(
       `
     select u.id, u.login
-    from "users" u
+    from public."users" u
     where login = $1
     `,
       [login],
@@ -86,12 +92,12 @@ export class UserRepoSql {
     const user = await this.dataSource.query(
       `
     select u."id" ,u."email", u."isConfirmed"
-    from "users" u
+    FROM public."users" u
     where "email" = $1
    `,
       [email],
     );
-
+    console.log('user', user);
     return user[0];
   }
 

@@ -5,13 +5,13 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { UserExistsEmail, UserExistsLogin } from '../setting/user.validator';
 import { Type } from 'class-transformer';
+import { UserExistsEmail, UserExistsLogin } from '../setting/user.decorator';
 
 export class UserDto {
   @IsString()
-  @Length(3, 10)
   @UserExistsLogin()
+  @Length(3, 10)
   readonly login: string;
 
   @IsString()
@@ -26,11 +26,16 @@ export class UserDto {
 
 export class UserQueryDto {
   @IsString()
-  searchLoginTerm: string | null = null;
+  @IsOptional()
+  searchLoginTerm?: string | null = null;
+
   @IsString()
-  searchEmailTerm: string | null = null;
+  @IsOptional()
+  searchEmailTerm?: string | null = null;
+
   @IsString()
   sortBy: string = 'createdAt';
+
   @IsString()
   sortDirection: string = 'desc';
 
@@ -38,6 +43,7 @@ export class UserQueryDto {
   @IsOptional()
   @Type(() => Number)
   pageNumber: number = 1;
+
   @IsNumber()
   @IsOptional()
   @Type(() => Number)

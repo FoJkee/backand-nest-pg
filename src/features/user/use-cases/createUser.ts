@@ -2,18 +2,18 @@ import { UserDto } from '../dto/user.dto';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { UserRepo } from '../api/user.repo';
-import { UserModelView } from '../dto/user.model';
+import { UserService } from '../api/user.service';
+import { UserModelView, UserModelResult } from '../dto/user.model';
 
 export class CreateUser {
   constructor(public readonly userDto: UserDto) {}
 }
 
 @CommandHandler(CreateUser)
-export class CreateUserCase implements ICommandHandler<CreateUser> {
-  constructor(private readonly userRepo: UserRepo) {}
+export class CreateUserHandler implements ICommandHandler<CreateUser> {
+  constructor(private readonly userRepo: UserService) {}
 
-  async execute(command: CreateUser) {
+  async execute(command: CreateUser): Promise<UserModelResult> {
     const passwordSalt = await bcrypt.genSalt(8);
     const passwordHash = await bcrypt.hash(
       command.userDto.password,

@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserRepo } from '../api/user.repo';
+import { UserService } from '../api/user.service';
 import { NotFoundException } from '@nestjs/common';
 
 export class DeleteUser {
@@ -7,8 +7,8 @@ export class DeleteUser {
 }
 
 @CommandHandler(DeleteUser)
-export class DeleteUserCase implements ICommandHandler<DeleteUser> {
-  constructor(private readonly userRepo: UserRepo) {}
+export class DeleteUserHandler implements ICommandHandler<DeleteUser> {
+  constructor(private readonly userRepo: UserService) {}
 
   async execute(command: DeleteUser) {
     const deleteUser = await this.userRepo.deleteUserId(command.userId);

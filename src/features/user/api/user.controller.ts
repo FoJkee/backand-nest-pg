@@ -27,8 +27,9 @@ export class UserController {
   async createUser(@Body() userDto: UserDto) {
     return await this.commandBus.execute(new CreateUser(userDto));
   }
+
   @Delete('users/:userId')
-  @HttpCode(200)
+  @HttpCode(204)
   async deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
     return await this.commandBus.execute(new DeleteUser(userId));
   }
