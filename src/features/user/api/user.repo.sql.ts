@@ -76,7 +76,7 @@ export class UserRepoSql {
     } as UserModelView;
   }
 
-  async findUserByLogin(login: string) {
+  async findUserByLogin(login: string): Promise<UserModelView> {
     const user = await this.dataSource.query(
       `
     select u.id, u.login
@@ -88,17 +88,28 @@ export class UserRepoSql {
     return user[0];
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<UserModelView> {
     const user = await this.dataSource.query(
       `
-    select u."id" ,u."email", u."isConfirmed"
-    FROM public."users" u
-    where "email" = $1
+      select u.id, u."email", u."isConfirmed"
+      from public."users" u
+      where "email" = $1
    `,
       [email],
     );
-    console.log('user', user);
     return user[0];
+  }
+
+  async validateEmail(email: string): Promise<UserModelView> {
+    const user = await this.dataSource.query(
+      `
+   select u."id", u."email", u."isConfirmed"
+   from public."users" u
+    `,
+      [email],
+    );
+
+    return user[0] && user[0].isConfirmed !== true ? user[0] : null;
   }
 
   async findUserId(userId: string) {
@@ -139,5 +150,21 @@ export class UserRepoSql {
       email: user[0].email,
       password: user[0].password,
     } as UserModelView;
+  }
+
+  async registrationEmailResending(
+    code: string,
+    email: string,
+  ): Promise<UserModelView> {
+    const user = await this.dataSource.query(
+      `
+    update public."users"
+    set "codeConfirmation" = $1
+    where "email" = $2
+    returning "codeConfirmation", "email" 
+    `,
+      [code, email],
+    );
+    return user[0][0];
   }
 }

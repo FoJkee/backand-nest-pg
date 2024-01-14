@@ -17,4 +17,11 @@ export class UserService {
   async getUsers(userQueryDto: UserQueryDto) {
     return await this.userRepoSql.getUsers(userQueryDto);
   }
+
+  async registrationEmailResending(code: string, email: string) {
+    return await this.userRepoSql.registrationEmailResending(code, email);
+  }
+  async findUserByEmail(email: string) {
+    return await this.userRepoSql.findUserByEmail(email);
+  }
 }

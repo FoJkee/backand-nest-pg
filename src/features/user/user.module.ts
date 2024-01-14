@@ -13,5 +13,6 @@ const handlers = [CreateUserHandler, GetAllUserHandler, DeleteUserHandler];
   imports: [CqrsModule],
   providers: [...handlers, UserRepoSql, UserService],
   controllers: [UserController],
+  exports: [UserRepoSql],
 })
 export class UserModule {}

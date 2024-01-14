@@ -8,18 +8,22 @@ import { ConfigModule } from '@nestjs/config';
 import { TestingModule } from './features/testing/testing.module';
 import { AuthModule } from './features/auth/auth.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import {
+  UserFindEmailValidator,
+  UserFindLoginValidator,
+} from './features/user/setting/user.validator';
 
-const modules = [UserModule, TestingModule, AuthModule];
+const modules = [CqrsModule, UserModule, TestingModule, AuthModule];
+const setting = [UserFindEmailValidator, UserFindLoginValidator];
 
 const imports = [
   ConfigModule.forRoot({ isGlobal: true }),
   TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
-  CqrsModule,
 ];
 
 @Module({
   imports: [...imports, ...modules],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ...setting],
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import * as process from 'process';
 
 @Injectable()
@@ -14,12 +14,13 @@ export class EmailService {
         pass: process.env.PASS,
       },
     });
-    const info = await transporter.sendMail({
+
+    await transporter.sendMail({
       // from: email, // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: message, // html body
     });
-    return info;
+    return;
   }
 }

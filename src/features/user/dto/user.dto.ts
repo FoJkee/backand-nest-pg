@@ -4,14 +4,18 @@ import {
   IsOptional,
   IsString,
   Length,
+  Validate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UserExistsEmail, UserExistsLogin } from '../setting/user.decorator';
+import {
+  UserFindEmailValidator,
+  UserFindLoginValidator,
+} from '../setting/user.validator';
 
 export class UserDto {
   @IsString()
-  @UserExistsLogin()
   @Length(3, 10)
+  @Validate(UserFindLoginValidator)
   readonly login: string;
 
   @IsString()
@@ -20,7 +24,7 @@ export class UserDto {
 
   @IsString()
   @IsEmail()
-  @UserExistsEmail()
+  @Validate(UserFindEmailValidator)
   readonly email: string;
 }
 

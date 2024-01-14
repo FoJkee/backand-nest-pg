@@ -4,6 +4,7 @@ import { UserService } from '../../user/api/user.service';
 import * as bcrypt from 'bcrypt';
 import { UserModelView } from '../../user/dto/user.model';
 import { randomUUID } from 'crypto';
+import { EmailService } from '../../../setting/email.service';
 
 export class Registration {
   constructor(public readonly registrationDto: RegistrationDto) {}
@@ -11,7 +12,10 @@ export class Registration {
 
 @CommandHandler(Registration)
 export class RegistrationHandler implements ICommandHandler<Registration> {
-  constructor(private readonly userRepo: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly emailService: EmailService,
+  ) {}
   async execute(command: Registration) {
     const passwordSalt = await bcrypt.genSalt(8);
     const passwordHash = await bcrypt.hash(
@@ -28,6 +32,16 @@ export class RegistrationHandler implements ICommandHandler<Registration> {
       codeConfirmation: randomUUID(),
       isConfirmed: false,
     };
-    await this.userRepo.createOneUser(newUser);
+
+    await this.userService.createOneUser(newUser);
+    await this.emailService.sendEmail(
+      newUser.email,
+      'Registration',
+      `<h1>Registation</h1>
+            <p>To finish registration please follow the link below:
+             <a href="https://somesite.com/confirm-email?code=${newUser.codeConfirmation}">complete registration</a>
+            </p>`,
+    );
+    return;
   }
 }
