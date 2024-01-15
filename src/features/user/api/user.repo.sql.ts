@@ -135,12 +135,12 @@ export class UserRepoSql {
     );
     return { deleteCount: deleteUser[1] };
   }
-  async findUserByLoginOrEmail(loginOrEmail: string) {
+  async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserModelView> {
     const user = await this.dataSource.query(
       `
-    select u."id", u."login", u."email", u.password
-    from "users" u
-    where u."login" = $1 or email = $1
+    select u."id", u."login", u."email", u."password"
+    from public."users" u
+    where u."login" = $1 or u."email" = $1
     `,
       [loginOrEmail],
     );
@@ -166,5 +166,28 @@ export class UserRepoSql {
       [code, email],
     );
     return user[0][0];
+  }
+
+  async findUserAndUpdateCode(userId: string): Promise<UserModelView> {
+    const user = await this.dataSource.query(
+      `
+      update public."users"
+        set "isConfirmed" = true
+        where "id" = $1
+    `,
+      [userId],
+    );
+    return user[0];
+  }
+  async findUserByCode(code: string): Promise<UserModelView> {
+    const user = await this.dataSource.query(
+      `
+    select u."id", u."codeConfirmation", u."isConfirmed"
+    from public."users" u
+    where codeConfirmation = $1
+    `,
+      [code],
+    );
+    return user[0];
   }
 }
