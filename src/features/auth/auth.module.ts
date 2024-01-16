@@ -6,15 +6,28 @@ import { UserRepoSql } from '../user/api/user.repo.sql';
 import { EmailService } from '../../setting/email.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RegistrationEmailResendingHandler } from './use-cases/registrationEmailResending';
+import { LoginHandler } from './use-cases/login';
+import { AuthService } from './infrastructure/auth.service';
+import { DeviceService } from '../device/device.service';
+import { JwtService } from '@nestjs/jwt';
+import { DeviceRepoSql } from '../device/device.repo.sql';
 
+const handlers = [
+  RegistrationHandler,
+  RegistrationEmailResendingHandler,
+  LoginHandler,
+];
 @Module({
   controllers: [AuthController],
   providers: [
-    RegistrationHandler,
+    ...handlers,
     UserService,
     UserRepoSql,
     EmailService,
-    RegistrationEmailResendingHandler,
+    AuthService,
+    DeviceService,
+    JwtService,
+    DeviceRepoSql,
   ],
   imports: [CqrsModule],
 })

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepoSql } from './user.repo.sql';
 import { UserModelView } from '../dto/user.model';
 import { UserQueryDto } from '../dto/user.dto';
@@ -31,6 +31,7 @@ export class UserService {
   }
   async validateUserAndPass(loginOrEmail: string, password: string) {
     const user = await this.userRepoSql.findUserByLoginOrEmail(loginOrEmail);
+    if (!user) return null;
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) return null;
     return user;

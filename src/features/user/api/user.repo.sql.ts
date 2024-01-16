@@ -139,7 +139,7 @@ export class UserRepoSql {
     const user = await this.dataSource.query(
       `
     select u."id", u."login", u."email", u."password"
-    from public."users" u
+    from users u
     where u."login" = $1 or u."email" = $1
     `,
       [loginOrEmail],

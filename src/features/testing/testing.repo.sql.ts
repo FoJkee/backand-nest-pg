@@ -8,7 +8,9 @@ export class TestingRepoSql {
 
   async deleteAll(): Promise<boolean> {
     try {
-      await this.dataSource.query(`delete from public."users"`);
+      await this.dataSource.query(`
+    delete from public."users";
+    delete from public."devices"`);
       return true;
     } catch (e) {
       return false;

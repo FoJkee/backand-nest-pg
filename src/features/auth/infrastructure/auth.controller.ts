@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { RegistrationDto } from '../dto/registration.dto';
 import { CommandBus } from '@nestjs/cqrs';
@@ -50,7 +51,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body() loginDto: LoginDto,
     @deviceEntity() deviceType: DeviceType,
   ) {
@@ -61,6 +62,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
     });
+    // res.status(200).send({ accessToken: userLogin.accessToken });
     return { accessToken: userLogin.accessToken };
   }
 

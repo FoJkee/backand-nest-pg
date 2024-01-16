@@ -12,12 +12,17 @@ import {
   UserFindEmailValidator,
   UserFindLoginValidator,
 } from './features/user/setting/user.validator';
+import { getConfig } from './setting/env.config';
 
 const modules = [CqrsModule, UserModule, TestingModule, AuthModule];
 const setting = [UserFindEmailValidator, UserFindLoginValidator];
 
 const imports = [
-  ConfigModule.forRoot({ isGlobal: true }),
+  ConfigModule.forRoot({
+    isGlobal: true,
+    load: [getConfig],
+    envFilePath: '.env',
+  }),
   TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
 ];
 
