@@ -13,6 +13,7 @@ import {
   UserFindLoginValidator,
 } from './features/user/setting/user.validator';
 import { getConfig } from './setting/env.config';
+import { DeviceController } from './features/device/api/device.controller';
 
 const modules = [CqrsModule, UserModule, TestingModule, AuthModule];
 const setting = [UserFindEmailValidator, UserFindLoginValidator];
@@ -28,7 +29,7 @@ const imports = [
 
 @Module({
   imports: [...imports, ...modules],
-  controllers: [AppController],
+  controllers: [AppController, DeviceController],
   providers: [AppService, ...setting],
 })
 export class AppModule {}

@@ -1,22 +1,19 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import * as process from 'process';
+import { UserEntity } from '../features/user/entity/user.entity';
+import { DeviceEntity } from '../features/device/entity/device.entity';
+
+const entity = [UserEntity, DeviceEntity];
 
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
-      // type: 'postgres',
-      // host: process.env.HOST_POSTGRES,
-      // port: +process.env.PORT_POSTGRES,
-      // password: process.env.PASSWORD_POSTGRES,
-      // username: process.env.NAME_POSTGRES,
-      // entities: [],
-      // database: process.env.DATABASE_POSTGRES,
       type: 'postgres',
       host: 'localhost',
       port: 4050,
       username: 'postgres',
       password: '2051',
       database: 'hw',
+      entities: [...entity],
     };
   }
 }

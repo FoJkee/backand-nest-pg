@@ -5,7 +5,7 @@ export class UserModelView {
     public id: string = randomUUID(),
     public login: string,
     public email: string,
-    public createdAt: string = new Date().toISOString(),
+    public createdAt: Date,
     public password: string,
     public codeConfirmation: string = randomUUID(),
     public isConfirmed: boolean,
@@ -17,6 +17,6 @@ export class UserModelResult {
     public id: string = randomUUID(),
     public login: string,
     public email: string,
-    public createdAt: string = new Date().toISOString(),
+    public createdAt: Date,
   ) {}
 }

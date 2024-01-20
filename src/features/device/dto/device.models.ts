@@ -4,6 +4,6 @@ export class DeviceModels {
     public userId: string,
     public deviceId: string,
     public deviceName: string,
-    public lastActiveDate: string,
+    public lastActiveDate: Date,
   ) {}
 }

@@ -7,13 +7,13 @@ export type DeviceType = {
   ip: string;
 };
 
-export const deviceEntity = createParamDecorator(
+export const DeviceDecorators = createParamDecorator(
   (data: string, ctx: ExecutionContext): DeviceType => {
     const request = ctx.switchToHttp().getRequest();
 
     return {
       deviceId: request.deviceId ?? randomUUID(),
-      deviceName: request.headers['User-Agent'],
+      deviceName: request.get('user-agent'),
       ip: request.ip,
     };
   },

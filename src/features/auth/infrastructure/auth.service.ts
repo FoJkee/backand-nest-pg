@@ -40,6 +40,6 @@ export class AuthService {
 
   async decodeToken(token: string) {
     const result = await this.jwtService.decode(token);
-    return new Date(result.iat * 1000).toISOString();
+    return new Date(result.iat * 1000);
   }
 }

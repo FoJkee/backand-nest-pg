@@ -35,7 +35,6 @@ export class RegistrationConfirmationHandler
         },
       ]);
 
-    await this.userService.findUserAndUpdateCode(findUserByCode.id);
-    return;
+    return await this.userService.findUserAndUpdateCode(findUserByCode.id);
   }
 }

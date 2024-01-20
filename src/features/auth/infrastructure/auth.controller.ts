@@ -17,11 +17,17 @@ import { RegistrationConfirmationDto } from '../dto/registrationConfirmation.dto
 import { Login } from '../use-cases/login';
 import { Response } from 'express';
 import { LoginDto } from '../dto/login.dto';
-import { deviceEntity, DeviceType } from '../../../decorators/deviceEntity';
+import {
+  DeviceDecorators,
+  DeviceType,
+} from '../../../decorators/device.decorators';
+import { UserId } from '../../../decorators/user.decorator';
+import { Logout } from '../use-cases/logout';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly commandBus: CommandBus) {}
+
   @Post('registration')
   @HttpCode(HttpStatus.NO_CONTENT)
   async registration(@Body() registrationDto: RegistrationDto) {
@@ -53,7 +59,7 @@ export class AuthController {
   async login(
     @Res({ passthrough: true }) res: Response,
     @Body() loginDto: LoginDto,
-    @deviceEntity() deviceType: DeviceType,
+    @DeviceDecorators() deviceType: DeviceType,
   ) {
     const userLogin = await this.commandBus.execute(
       new Login(loginDto, deviceType),
@@ -62,11 +68,28 @@ export class AuthController {
       httpOnly: true,
       secure: true,
     });
-    // res.status(200).send({ accessToken: userLogin.accessToken });
     return { accessToken: userLogin.accessToken };
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async logout() {}
+  async logout(
+    @Res({ passthrough: true }) res: Response,
+    @DeviceDecorators() deviceType: DeviceType,
+    @UserId() userId: string,
+  ) {
+    const userLogin = await this.commandBus.execute(
+      new Logout(deviceType, userId),
+    );
+    console.log('userLogin', userLogin);
+    if (!userLogin) throw new UnauthorizedException();
+    res.clearCookie('refreshToken');
+    return;
+  }
+
+  // @Post('refresh-token')
+  // @HttpCode(HttpStatus.OK)
+  // async refreshToken() {
+  //   return this.commandBus.execute();
+  // }
 }

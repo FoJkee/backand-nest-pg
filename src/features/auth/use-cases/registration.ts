@@ -28,12 +28,12 @@ export class RegistrationHandler implements ICommandHandler<Registration> {
       login: command.registrationDto.login,
       email: command.registrationDto.email,
       password: passwordHash,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       codeConfirmation: randomUUID(),
       isConfirmed: false,
     };
 
-    await this.userService.createOneUser(newUser);
+    await this.userService.createUser(newUser);
     await this.emailService.sendEmail(
       newUser.email,
       'Registration',

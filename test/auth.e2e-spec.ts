@@ -6,7 +6,7 @@ import { AppModule } from '../src/app.module';
 import { createConfig } from '../src/config/create.config';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
-import { UserRepoSql } from '../src/features/user/api/user.repo.sql';
+import { UserService } from '../src/features/user/api/user.service';
 
 describe('auth', () => {
   let app: INestApplication;
@@ -16,7 +16,7 @@ describe('auth', () => {
   let user1: UserModelView | null;
   let user2: UserModelView | null;
   let testingUser: TestingUser;
-  let userRepositorySql: UserRepoSql;
+  let userService: UserService;
   let cookie: any;
   let cookie1: any;
   let session: any;
@@ -35,7 +35,7 @@ describe('auth', () => {
     // securityDevicesService = app.get<SecurityDevicesService>(
     //   SecurityDevicesService,
     // );
-    userRepositorySql = app.get<UserRepoSql>(UserRepoSql);
+    userService = app.get<UserService>(UserService);
   });
 
   afterAll(async () => {
@@ -95,7 +95,7 @@ describe('auth', () => {
         email: 'romanovsky0815@gmail.com',
       });
 
-      user2 = await userRepositorySql.findUserByLoginOrEmail(
+      user2 = await userService.findUserByLoginOrEmail(
         'romanovsky0815@gmail.com',
       );
       expect(response.status).toBe(204);
@@ -164,7 +164,7 @@ describe('auth', () => {
         .post('/auth/registration-email-resending')
         .send({ email: user2!.email });
 
-      user2 = await userRepositorySql.findUserByLoginOrEmail(
+      user2 = await userService.findUserByLoginOrEmail(
         'romanovsky0815@gmail.com',
       );
       expect(response.status).toBe(204);
@@ -338,7 +338,7 @@ describe('auth', () => {
       accessToken = response.body.accessToken;
       cookie = response.get('Set-Cookie');
 
-      user1 = await userRepositorySql.findUserId(user1!.id);
+      user1 = await userService.findUserId(user1!.id);
       // session = await securityDevicesService.getDeviceAllSessionUserId(
       //   user1!.id,
       // );
@@ -386,7 +386,7 @@ describe('auth', () => {
     accessToken1 = response.body.accessToken;
     cookie1 = response.get('Set-Cookie');
 
-    user1 = await userRepositorySql.findUserId(user1!.id);
+    user1 = await userService.findUserId(user1!.id);
     // session = await securityDevicesService.getDeviceAllSessionUserId(user1!.id);
     expect(response.status).toBe(200);
     expect(accessToken1).toBeDefined();

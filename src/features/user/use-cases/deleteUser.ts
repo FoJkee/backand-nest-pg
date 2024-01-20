@@ -8,14 +8,11 @@ export class DeleteUser {
 
 @CommandHandler(DeleteUser)
 export class DeleteUserHandler implements ICommandHandler<DeleteUser> {
-  constructor(private readonly userRepo: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   async execute(command: DeleteUser) {
-    const deleteUser = await this.userRepo.deleteUserId(command.userId);
-    if (deleteUser.deleteCount === 0) {
-      throw new NotFoundException();
-    } else {
-      return;
-    }
+    const user = await this.userService.findUserId(command.userId);
+    if (!user) throw new NotFoundException();
+    return this.userService.deleteUserId(command.userId);
   }
 }

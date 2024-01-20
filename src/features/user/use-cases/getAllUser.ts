@@ -6,6 +6,7 @@ import {
   PaginationView,
 } from '../../../setting/pagination.model';
 import { UserModelResult } from '../dto/user.model';
+import { UserEntity } from '../entity/user.entity';
 
 export class GetAllUser {
   constructor(public readonly userQueryDto: UserQueryDto) {}
@@ -14,7 +15,7 @@ export class GetAllUser {
 @QueryHandler(GetAllUser)
 export class GetAllUserHandler implements IQueryHandler<GetAllUser> {
   constructor(private readonly userRepo: UserService) {}
-  async execute(query: GetAllUser): Promise<PaginationView<UserModelResult[]>> {
+  async execute(query: GetAllUser): Promise<PaginationView<UserEntity[]>> {
     const paginationUser: PaginationModelsView = {
       pageNumber: query.userQueryDto.pageNumber || 1,
       pageSize: query.userQueryDto.pageSize || 10,

@@ -4,17 +4,17 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { UserRepoSql } from '../api/user.repo.sql';
+import { UserService } from '../api/user.service';
 
 //login
 @ValidatorConstraint({ name: 'UserExistsLogin', async: true })
 @Injectable()
 export class UserFindLoginValidator implements ValidatorConstraintInterface {
-  constructor(private readonly userRepoSql: UserRepoSql) {}
+  constructor(private readonly userService: UserService) {}
 
   async validate(login: string): Promise<boolean> {
     try {
-      const findLogin = await this.userRepoSql.findUserByLogin(login);
+      const findLogin = await this.userService.findUserByLogin(login);
       if (findLogin) return false;
       return true;
     } catch (e) {
@@ -32,11 +32,11 @@ export class UserFindLoginValidator implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'UserExistsEmail', async: true })
 @Injectable()
 export class UserFindEmailValidator implements ValidatorConstraintInterface {
-  constructor(private readonly userRepoSql: UserRepoSql) {}
+  constructor(private readonly userService: UserService) {}
 
   async validate(email: string): Promise<boolean> {
     try {
-      const findEmail = await this.userRepoSql.findUserByEmail(email);
+      const findEmail = await this.userService.findUserByEmail(email);
       if (findEmail) return false;
       return true;
     } catch (e) {

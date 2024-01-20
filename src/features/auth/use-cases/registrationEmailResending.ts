@@ -45,7 +45,6 @@ export class RegistrationEmailResendingHandler
       newCodeConfirmation,
       command.registrationEmailResendingDto.email,
     );
-
     await this.emailService.sendEmail(
       command.registrationEmailResendingDto.email,
       'Email resending confirmation',

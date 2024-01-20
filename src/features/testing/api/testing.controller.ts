@@ -1,13 +1,13 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
-import { TestingRepoSql } from './testing.repo.sql';
+import { TestingService } from './testing.service';
 
 @Controller('testing')
 export class TestingController {
-  constructor(private readonly testingRepoSql: TestingRepoSql) {}
+  constructor(private readonly testingService: TestingService) {}
 
   @Delete('all-data')
   @HttpCode(204)
   async deleteAll(): Promise<boolean> {
-    return await this.testingRepoSql.deleteAll();
+    return await this.testingService.deleteAll();
   }
 }

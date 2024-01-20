@@ -3,9 +3,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserService } from '../../user/api/user.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../infrastructure/auth.service';
-import { DeviceType } from '../../../decorators/deviceEntity';
-import { DeviceService } from '../../device/device.service';
+import { DeviceType } from '../../../decorators/device.decorators';
+import { DeviceService } from '../../device/api/device.service';
 import { DeviceModels } from '../../device/dto/device.models';
+import * as bcrypt from 'bcrypt';
 
 export class Login {
   constructor(
@@ -23,14 +24,19 @@ export class LoginHandler implements ICommandHandler<Login> {
   ) {}
 
   async execute(command: Login) {
-    const validateUser = await this.userService.validateUserAndPass(
+    const user = await this.userService.findUserByLoginOrEmail(
       command.loginDto.loginOrEmail,
-      command.loginDto.password,
     );
-    if (!validateUser) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException();
+
+    const comparePassword = await bcrypt.compare(
+      command.loginDto.password,
+      user.password,
+    );
+    if (!comparePassword) throw new UnauthorizedException();
 
     const { accessToken, refreshToken } = await this.authService.generateToken(
-      validateUser.id,
+      user.id,
       command.deviceType.deviceId,
     );
 
@@ -38,7 +44,7 @@ export class LoginHandler implements ICommandHandler<Login> {
 
     const createDevice: DeviceModels = {
       ip: command.deviceType.ip,
-      userId: validateUser.id,
+      userId: user.id,
       deviceId: command.deviceType.deviceId,
       deviceName: command.deviceType.deviceName,
       lastActiveDate,
