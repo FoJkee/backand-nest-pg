@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
+import { Response, Request } from 'express';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,26 +15,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
 
     if (status === 400) {
-      const errorsResponse = {
+      const errorResponse = {
         errorsMessages: [],
       };
 
       const responseBody: any = exception.getResponse();
 
       responseBody.message.forEach((e) => {
-        errorsResponse.errorsMessages.push(e);
+        errorResponse.errorsMessages.push(e);
       });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-expect-error
-      response.status(status).send(errorsResponse);
+
+      return response.status(status).send(errorResponse);
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-expect-error
       response.status(status).json({
         statusCode: status,
+        timestamp: new Date().toISOString(),
         path: request.url,
       });
     }
   }
 }
+
 export const GlobalHttpExceptionFilter = new HttpExceptionFilter();

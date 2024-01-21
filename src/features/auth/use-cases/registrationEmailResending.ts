@@ -27,15 +27,15 @@ export class RegistrationEmailResendingHandler
     if (!findUserEmail)
       throw new BadRequestException([
         {
-          message: "Email don't exist",
-          filed: 'email',
+          message: `Email don't exist`,
+          field: 'email',
         },
       ]);
     if (findUserEmail.isConfirmed)
       throw new BadRequestException([
         {
           message: 'Email is confirmed',
-          filed: 'email',
+          field: 'email',
         },
       ]);
 
@@ -43,7 +43,7 @@ export class RegistrationEmailResendingHandler
 
     const updateUserCode = await this.userService.registrationEmailResending(
       newCodeConfirmation,
-      command.registrationEmailResendingDto.email,
+      findUserEmail.email,
     );
     await this.emailService.sendEmail(
       command.registrationEmailResendingDto.email,

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import request from 'supertest';
+import * as request from 'supertest';
 
 // export class TestingBlog {
 //   constructor(private readonly server: any) {}

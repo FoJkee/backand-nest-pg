@@ -16,16 +16,16 @@ export class UserDto {
   @IsString()
   @Length(3, 10)
   @Validate(UserFindLoginValidator)
-  readonly login: string;
+  login: string;
 
   @IsString()
   @Length(6, 20)
-  readonly password: string;
+  password: string;
 
   @IsString()
   @IsEmail()
   @Validate(UserFindEmailValidator)
-  readonly email: string;
+  email: string;
 }
 
 export class UserQueryDto {
@@ -38,10 +38,10 @@ export class UserQueryDto {
   searchEmailTerm?: string | null = null;
 
   @IsString()
-  sortBy: string = 'createdAt';
+  sortBy: string | null = 'createdAt';
 
   @IsString()
-  sortDirection: string = 'desc';
+  sortDirection: string | null = 'desc';
 
   @IsNumber()
   @IsOptional()

@@ -5,16 +5,17 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseUUIDPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { UserDto, UserQueryDto } from '../dto/user.dto';
 import { CreateUser } from '../use-cases/createUser';
 import { DeleteUser } from '../use-cases/deleteUser';
 import { GetAllUser } from '../use-cases/getAllUser';
-
+import { BasicAuthGuard } from '../../../guards/basic.auth';
+@UseGuards(BasicAuthGuard)
 @Controller('sa')
 export class UserController {
   constructor(
@@ -30,7 +31,7 @@ export class UserController {
 
   @Delete('users/:userId')
   @HttpCode(204)
-  async deleteUser(@Param('userId', ParseUUIDPipe) userId: string) {
+  async deleteUser(@Param('userId') userId: string) {
     return await this.commandBus.execute(new DeleteUser(userId));
   }
 

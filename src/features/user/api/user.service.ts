@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserModelView } from '../dto/user.model';
+import { UserModelResult, UserModelView } from '../dto/user.model';
 import { UserQueryDto } from '../dto/user.dto';
 import { UserEntity } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,9 +22,9 @@ export class UserService {
 
   async getUsers(
     userQueryDto: UserQueryDto,
-  ): Promise<PaginationView<UserEntity[]>> {
-    const searchEmailTerm = userQueryDto.searchEmailTerm;
-    const searchLoginTerm = userQueryDto.searchLoginTerm;
+  ): Promise<PaginationView<UserModelResult[]>> {
+    const searchEmailTerm = userQueryDto.searchEmailTerm ?? '';
+    const searchLoginTerm = userQueryDto.searchLoginTerm ?? '';
     const pageSkip = userQueryDto.pageSize * (userQueryDto.pageNumber - 1);
 
     const [user, count] = await this.userRepository.findAndCount({
@@ -33,29 +33,23 @@ export class UserService {
         email: ILike(`%${searchEmailTerm}%`),
       },
       order: {
-        [userQueryDto.sortBy]:
-          userQueryDto.sortDirection === 'asc' ? 'asc' : 'desc',
+        [userQueryDto.sortBy]: userQueryDto.sortDirection,
       },
-      take: userQueryDto.pageSize,
-      skip: pageSkip,
+      take: +userQueryDto.pageSize,
+      skip: +pageSkip,
     });
-
-    const users = user.map(
-      (el) =>
-        ({
-          id: el.id,
-          login: el.login,
-          email: el.email,
-          createdAt: el.createdAt,
-        }) as UserEntity,
-    );
 
     return {
       pagesCount: Math.ceil(count / userQueryDto.pageSize),
       page: userQueryDto.pageNumber,
       pageSize: userQueryDto.pageSize,
       totalCount: count,
-      items: users,
+      items: user.map((el) => ({
+        id: el.id,
+        login: el.login,
+        email: el.email,
+        createdAt: el.createdAt,
+      })),
     };
   }
 

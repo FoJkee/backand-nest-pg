@@ -25,7 +25,6 @@ import {
 import { UserId } from '../../../decorators/user.decorator';
 import { Logout } from '../use-cases/logout';
 import { RefreshTokensGuard } from '../../../guards/refreshTokens.guard';
-import { UserEntity } from '../../user/entity/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -85,7 +84,6 @@ export class AuthController {
     const userLogin = await this.commandBus.execute(
       new Logout(deviceType, userId),
     );
-    console.log('userLogin', userLogin);
     if (!userLogin) throw new UnauthorizedException();
     res.clearCookie('refreshToken').sendStatus(HttpStatus.NO_CONTENT);
     return;

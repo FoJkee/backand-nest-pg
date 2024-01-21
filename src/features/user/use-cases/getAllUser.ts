@@ -15,7 +15,7 @@ export class GetAllUser {
 @QueryHandler(GetAllUser)
 export class GetAllUserHandler implements IQueryHandler<GetAllUser> {
   constructor(private readonly userRepo: UserService) {}
-  async execute(query: GetAllUser): Promise<PaginationView<UserEntity[]>> {
+  async execute(query: GetAllUser) {
     const paginationUser: PaginationModelsView = {
       pageNumber: query.userQueryDto.pageNumber || 1,
       pageSize: query.userQueryDto.pageSize || 10,
@@ -23,9 +23,7 @@ export class GetAllUserHandler implements IQueryHandler<GetAllUser> {
       searchEmailTerm: query.userQueryDto.searchEmailTerm || '',
       sortBy: query.userQueryDto.sortBy || 'createdAt',
       sortDirection:
-        query.userQueryDto.sortDirection === 'asc'
-          ? query.userQueryDto.sortDirection
-          : 'desc',
+        query.userQueryDto.sortDirection === 'asc' ? 'asc' : 'desc',
     };
 
     return await this.userRepo.getUsers(paginationUser);
