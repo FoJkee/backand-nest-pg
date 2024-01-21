@@ -6,6 +6,7 @@ import {
   Post,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { RegistrationDto } from '../dto/registration.dto';
 import { CommandBus } from '@nestjs/cqrs';
@@ -23,6 +24,8 @@ import {
 } from '../../../decorators/device.decorators';
 import { UserId } from '../../../decorators/user.decorator';
 import { Logout } from '../use-cases/logout';
+import { RefreshTokensGuard } from '../../../guards/refreshTokens.guard';
+import { UserEntity } from '../../user/entity/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -72,6 +75,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(RefreshTokensGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(
     @Res({ passthrough: true }) res: Response,
@@ -83,7 +87,7 @@ export class AuthController {
     );
     console.log('userLogin', userLogin);
     if (!userLogin) throw new UnauthorizedException();
-    res.clearCookie('refreshToken');
+    res.clearCookie('refreshToken').sendStatus(HttpStatus.NO_CONTENT);
     return;
   }
 

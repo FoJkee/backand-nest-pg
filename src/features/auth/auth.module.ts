@@ -14,6 +14,7 @@ import { RegistrationConfirmationHandler } from './use-cases/registrationConfirm
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../user/entity/user.entity';
 import { DeviceEntity } from '../device/entity/device.entity';
+import { RefreshTokensGuard } from '../../guards/refreshTokens.guard';
 
 const handlers = [
   RegistrationHandler,

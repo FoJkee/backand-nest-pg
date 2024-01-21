@@ -1,6 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeviceType } from '../../../decorators/device.decorators';
 import { DeviceService } from '../../device/api/device.service';
+import { UserEntity } from '../../user/entity/user.entity';
+import { using } from 'rxjs';
 
 export class Logout {
   constructor(

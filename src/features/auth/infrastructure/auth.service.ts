@@ -42,4 +42,15 @@ export class AuthService {
     const result = await this.jwtService.decode(token);
     return new Date(result.iat * 1000);
   }
+
+  async verifyRefreshToken(refreshToken: string) {
+    try {
+      return this.jwtService.verify(refreshToken, {
+        secret: this.configService.get('secrets', { infer: true })
+          .secretRefreshToken,
+      });
+    } catch (e) {
+      return null;
+    }
+  }
 }

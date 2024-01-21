@@ -7,6 +7,9 @@ import { GetAllUserHandler } from './use-cases/getAllUser';
 import { DeleteUserHandler } from './use-cases/deleteUser';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
+import { DeviceService } from '../device/api/device.service';
+import { AuthService } from '../auth/infrastructure/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 const handlers = [CreateUserHandler, GetAllUserHandler, DeleteUserHandler];
 
