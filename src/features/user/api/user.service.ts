@@ -3,7 +3,7 @@ import { UserModelResult, UserModelView } from '../dto/user.model';
 import { UserQueryDto } from '../dto/user.dto';
 import { UserEntity } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { FindManyOptions, ILike, Repository } from 'typeorm';
 import { PaginationView } from '../../../setting/pagination.model';
 
 @Injectable()
@@ -22,34 +22,48 @@ export class UserService {
 
   async getUsers(
     userQueryDto: UserQueryDto,
-  ): Promise<PaginationView<UserModelResult[]>> {
-    const searchEmailTerm = userQueryDto.searchEmailTerm ?? '';
-    const searchLoginTerm = userQueryDto.searchLoginTerm ?? '';
-    const pageSkip = userQueryDto.pageSize * (userQueryDto.pageNumber - 1);
+  ): Promise<PaginationView<UserEntity[]>> {
+    const searchEmailTerm = userQueryDto.searchEmailTerm.toString();
+    const searchLoginTerm = userQueryDto.searchLoginTerm.toString();
+    const pageSkip = +userQueryDto.pageSize * (+userQueryDto.pageNumber - 1);
 
-    const [user, count] = await this.userRepository.findAndCount({
-      where: {
+    const where: FindManyOptions['where'] = [
+      {
         login: ILike(`%${searchLoginTerm}%`),
+      },
+      {
         email: ILike(`%${searchEmailTerm}%`),
       },
-      order: {
-        [userQueryDto.sortBy]: userQueryDto.sortDirection,
-      },
-      take: +userQueryDto.pageSize,
-      skip: +pageSkip,
-    });
+    ];
+
+    const [user, totalCount] = await Promise.all([
+      this.userRepository.find({
+        where,
+        order: {
+          [userQueryDto.sortBy]: userQueryDto.sortDirection,
+        },
+        take: +userQueryDto.pageSize,
+        skip: +pageSkip,
+      }),
+      this.userRepository.count({
+        where,
+      }),
+    ]);
 
     return {
-      pagesCount: Math.ceil(count / userQueryDto.pageSize),
+      pagesCount: Math.ceil(totalCount / userQueryDto.pageSize),
       page: userQueryDto.pageNumber,
       pageSize: userQueryDto.pageSize,
-      totalCount: count,
-      items: user.map((el) => ({
-        id: el.id,
-        login: el.login,
-        email: el.email,
-        createdAt: el.createdAt,
-      })),
+      totalCount: totalCount,
+      items: user.map(
+        (el) =>
+          ({
+            id: el.id,
+            login: el.login,
+            email: el.email,
+            createdAt: el.createdAt,
+          }) as UserEntity,
+      ),
     };
   }
 
