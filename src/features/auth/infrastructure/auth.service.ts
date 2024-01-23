@@ -53,4 +53,15 @@ export class AuthService {
       return null;
     }
   }
+
+  async verifyAccessToken(accessToken: string) {
+    try {
+      return this.jwtService.verify(accessToken, {
+        secret: this.configService.get('secrets', { infer: true })
+          .secretAccessToken,
+      });
+    } catch (e) {
+      return null;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserModelResult, UserModelView } from '../dto/user.model';
+import { UserModelView } from '../dto/user.model';
 import { UserQueryDto } from '../dto/user.dto';
 import { UserEntity } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';

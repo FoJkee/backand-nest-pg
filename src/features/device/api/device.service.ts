@@ -62,4 +62,19 @@ export class DeviceService {
       return false;
     }
   }
+  async updateDevice(
+    userId: string,
+    deviceId: string,
+    lastActiveDate: string,
+  ): Promise<boolean> {
+    try {
+      await this.deviceRepository.update(
+        { userId },
+        { deviceId, lastActiveDate },
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

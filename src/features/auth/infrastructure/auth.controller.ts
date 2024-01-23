@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -9,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RegistrationDto } from '../dto/registration.dto';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Registration } from '../use-cases/registration';
 import { RegistrationEmailResendingDto } from '../dto/registrationEmailResending.dto';
 import { RegistrationEmailResending } from '../use-cases/registrationEmailResending';
@@ -25,18 +26,31 @@ import {
 import { UserId } from '../../../decorators/user.decorator';
 import { Logout } from '../use-cases/logout';
 import { RefreshTokensGuard } from '../../../guards/refreshTokens.guard';
+import { AboutMe } from '../use-cases/aboutMe';
+import { BearerAuth } from '../../../guards/bearer.auth';
+import {
+  RefreshToken,
+  RefreshTokenDecorator,
+} from '../../../decorators/refreshToken.decorator';
+import { RefreshTokenClass } from '../use-cases/refreshToken';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post('registration')
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registration(@Body() registrationDto: RegistrationDto) {
     return await this.commandBus.execute(new Registration(registrationDto));
   }
 
   @Post('registration-email-resending')
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registrationEmailResending(
     @Body() registrationEmailResendingDto: RegistrationEmailResendingDto,
@@ -47,6 +61,7 @@ export class AuthController {
   }
 
   @Post('registration-confirmation')
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async registrationConfirmation(
     @Body() registrationConfirmationDto: RegistrationConfirmationDto,
@@ -57,6 +72,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.OK)
   async login(
     @Res({ passthrough: true }) res: Response,
@@ -78,7 +94,7 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(
     @Res({ passthrough: true }) res: Response,
-    @DeviceDecorators() deviceType: DeviceType,
+    @RefreshTokenDecorator() deviceType: DeviceType,
     @UserId() userId: string,
   ) {
     const userLogin = await this.commandBus.execute(
@@ -89,9 +105,31 @@ export class AuthController {
     return;
   }
 
-  // @Post('refresh-token')
-  // @HttpCode(HttpStatus.OK)
-  // async refreshToken() {
-  //   return this.commandBus.execute();
-  // }
+  @Post('refresh-token')
+  @UseGuards(RefreshTokensGuard)
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(
+    @RefreshToken() token: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const userRefLogin = await this.commandBus.execute(
+      new RefreshTokenClass(token),
+    );
+
+    if (!userRefLogin) throw new UnauthorizedException();
+
+    res.cookie('refreshToken', userRefLogin.refreshTokenNew, {
+      httpOnly: true,
+      secure: true,
+    });
+
+    return { accessToken: userRefLogin.accessTokenNew };
+  }
+
+  @Get('me')
+  @UseGuards(BearerAuth)
+  @HttpCode(HttpStatus.OK)
+  async aboutMe(@UserId() userId: string) {
+    return await this.queryBus.execute(new AboutMe(userId));
+  }
 }

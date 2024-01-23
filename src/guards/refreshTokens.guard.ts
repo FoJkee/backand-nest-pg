@@ -44,6 +44,7 @@ export class RefreshTokensGuard implements CanActivate {
 
     request.user = user;
     request.refrestTokenDecorator = dataToken;
+    request.payloadRefreshToken = refreshToken;
     return true;
   }
 }

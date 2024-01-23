@@ -7,3 +7,10 @@ export const RefreshTokenDecorator = createParamDecorator(
     return request.refrestTokenDecorator;
   },
 );
+
+export const RefreshToken = createParamDecorator(
+  (data: string, ctx: ExecutionContext): DeviceType => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.payloadRefreshToken;
+  },
+);

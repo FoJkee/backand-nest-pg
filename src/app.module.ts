@@ -34,6 +34,10 @@ import { DeviceEntity } from './features/device/entity/device.entity';
 import { EmailService } from './setting/email.service';
 import { AllDeviceUserIdHandler } from './features/device/user-cases/all.device.userId';
 import { DeleteAllOtherSessionHandler } from './features/device/user-cases/deleteAllOtherSession';
+import { AboutMeHandler } from './features/auth/use-cases/aboutMe';
+import { RefreshTokenHandler } from './features/auth/use-cases/refreshToken';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerConfigService } from './config/throttler.config';
 
 const services = [
   UserService,
@@ -63,13 +67,17 @@ const handlers = [
   DeleteUserHandler,
   AllDeviceUserIdHandler,
   DeleteAllOtherSessionHandler,
+  AboutMeHandler,
+  RefreshTokenHandler,
 ];
+
+const entity = [UserEntity, DeviceEntity];
 
 const validators = [UserFindEmailValidator, UserFindLoginValidator];
 const guards = [RefreshTokensGuard];
 
 const imports = [
-  TypeOrmModule.forFeature([UserEntity, DeviceEntity]),
+  TypeOrmModule.forFeature([...entity]),
   CqrsModule,
   ConfigModule.forRoot({
     isGlobal: true,
@@ -77,6 +85,7 @@ const imports = [
     envFilePath: '.env',
   }),
   TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+  ThrottlerModule.forRootAsync({ useClass: ThrottlerConfigService }),
 ];
 
 @Module({
