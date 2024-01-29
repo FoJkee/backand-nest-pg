@@ -25,7 +25,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUser> {
       login: command.userDto.login,
       email: command.userDto.email,
       password: passwordHash,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       codeConfirmation: randomUUID(),
       isConfirmed: false,
     };

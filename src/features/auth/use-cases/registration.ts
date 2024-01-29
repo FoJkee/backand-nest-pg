@@ -28,7 +28,7 @@ export class RegistrationHandler implements ICommandHandler<Registration> {
       login: command.registrationDto.login,
       email: command.registrationDto.email,
       password: passwordHash,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       codeConfirmation: randomUUID(),
       isConfirmed: false,
     };

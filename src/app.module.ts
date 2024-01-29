@@ -71,13 +71,13 @@ const handlers = [
   RefreshTokenHandler,
 ];
 
-const entity = [UserEntity, DeviceEntity];
+// const entity = [UserEntity, DeviceEntity];
 
 const validators = [UserFindEmailValidator, UserFindLoginValidator];
 const guards = [RefreshTokensGuard];
 
 const imports = [
-  TypeOrmModule.forFeature([...entity]),
+  TypeOrmModule.forFeature([UserEntity, DeviceEntity]),
   CqrsModule,
   ConfigModule.forRoot({
     isGlobal: true,

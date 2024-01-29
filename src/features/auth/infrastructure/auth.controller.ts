@@ -34,6 +34,7 @@ import {
 } from '../../../decorators/refreshToken.decorator';
 import { RefreshTokenClass } from '../use-cases/refreshToken';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { DeviceDto } from '../../device/dto/device.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -91,17 +92,15 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(RefreshTokensGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(204)
   async logout(
-    @Res({ passthrough: true }) res: Response,
-    @RefreshTokenDecorator() deviceType: DeviceType,
+    @RefreshTokenDecorator() deviceDto: DeviceDto,
     @UserId() userId: string,
   ) {
     const userLogin = await this.commandBus.execute(
-      new Logout(deviceType, userId),
+      new Logout(deviceDto, userId),
     );
     if (!userLogin) throw new UnauthorizedException();
-    res.clearCookie('refreshToken').sendStatus(HttpStatus.NO_CONTENT);
     return;
   }
 

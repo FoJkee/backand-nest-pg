@@ -3,9 +3,7 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserId } from '../../../decorators/user.decorator';
@@ -14,7 +12,8 @@ import { DeleteDeviceId } from '../user-cases/delete.deviceid';
 import { RefreshTokensGuard } from '../../../guards/refreshTokens.guard';
 import { AllDeviceUserId } from '../user-cases/all.device.userId';
 import { DeleteAllOtherSession } from '../user-cases/deleteAllOtherSession';
-import { Request } from 'express';
+import { RefreshTokenDecorator } from '../../../decorators/refreshToken.decorator';
+import { DeviceDto } from '../dto/device.dto';
 
 @Controller('security')
 export class DeviceController {
@@ -25,27 +24,25 @@ export class DeviceController {
 
   @Get('devices')
   @UseGuards(RefreshTokensGuard)
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(200)
   async getDevice(@UserId() userId: string) {
-    return await this.queryBus.execute(new AllDeviceUserId(userId));
+    return this.queryBus.execute(new AllDeviceUserId(userId));
   }
 
   @Delete('devices')
   @UseGuards(RefreshTokensGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteAllOtherSession(@Req() req: Request) {
-    return this.commandBus.execute(
-      new DeleteAllOtherSession(req.cookies.refreshToken),
-    );
+  @HttpCode(204)
+  async deleteAllOtherSession(@RefreshTokenDecorator() device: DeviceDto) {
+    return this.commandBus.execute(new DeleteAllOtherSession(device));
   }
 
   @Delete('devices/:deviceId')
   @UseGuards(RefreshTokensGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(204)
   async deleteDeviceId(
     @Param('deviceId') deviceId: string,
     @UserId() userId: string,
   ) {
-    return await this.commandBus.execute(new DeleteDeviceId(deviceId, userId));
+    return this.commandBus.execute(new DeleteDeviceId(deviceId, userId));
   }
 }

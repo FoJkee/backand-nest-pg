@@ -9,7 +9,7 @@ export const RefreshTokenDecorator = createParamDecorator(
 );
 
 export const RefreshToken = createParamDecorator(
-  (data: string, ctx: ExecutionContext): DeviceType => {
+  (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.payloadRefreshToken;
   },

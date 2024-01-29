@@ -20,8 +20,8 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenClass> {
     const dataToken = await this.authService.verifyRefreshToken(command.token);
     if (!dataToken) throw new UnauthorizedException();
 
-    const findUser = await this.userService.findUserId(dataToken.userId);
-    if (!findUser) throw new UnauthorizedException();
+    // const findUser = await this.userService.findUserId(dataToken.userId);
+    // if (!findUser) throw new UnauthorizedException();
 
     const { accessToken: accessTokenNew, refreshToken: refreshTokenNew } =
       await this.authService.generateToken(
@@ -35,7 +35,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenClass> {
     await this.deviceService.updateDevice(
       dataToken.userId,
       dataToken.deviceId,
-      lastActiveDateNew.toISOString(),
+      lastActiveDateNew,
     );
 
     return { accessTokenNew, refreshTokenNew };

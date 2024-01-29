@@ -38,9 +38,9 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async decodeToken(token: string) {
+  async decodeToken(token: string): Promise<string> {
     const result = await this.jwtService.decode(token);
-    return new Date(result.iat * 1000);
+    return new Date(result.iat * 1000).toISOString();
   }
 
   async verifyRefreshToken(refreshToken: string) {

@@ -13,7 +13,7 @@ export const DeviceDecorators = createParamDecorator(
 
     return {
       deviceId: request.deviceId ?? randomUUID(),
-      deviceName: request.get('user-agent'),
+      deviceName: request.headers['user-agent'],
       ip: request.ip,
     };
   },

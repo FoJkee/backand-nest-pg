@@ -7,6 +7,9 @@ import { DeviceType } from '../../../decorators/device.decorators';
 import { DeviceService } from '../../device/api/device.service';
 import { DeviceModels } from '../../device/dto/device.models';
 import * as bcrypt from 'bcrypt';
+import { UserId } from '../../../decorators/user.decorator';
+import { UserEntity } from '../../user/entity/user.entity';
+import { randomUUID } from 'crypto';
 
 export class Login {
   constructor(
@@ -42,12 +45,12 @@ export class LoginHandler implements ICommandHandler<Login> {
 
     const lastActiveDate = await this.authService.decodeToken(refreshToken);
 
-    const createDevice: DeviceModels = {
+    const createDevice = {
       ip: command.deviceType.ip,
-      userId: user.id,
+      title: command.deviceType.deviceName,
+      lastActiveDate: lastActiveDate,
       deviceId: command.deviceType.deviceId,
-      deviceName: command.deviceType.deviceName,
-      lastActiveDate,
+      userId: user.id,
     };
 
     await this.deviceService.createDevice(createDevice);

@@ -1,13 +1,8 @@
-import {
-  CommandHandler,
-  ICommandHandler,
-  IQueryHandler,
-  QueryHandler,
-} from '@nestjs/cqrs';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { DeviceService } from '../api/device.service';
 
 import { DeviceEntity } from '../entity/device.entity';
-import { UserEntity } from '../../user/entity/user.entity';
+import { AuthService } from '../../auth/infrastructure/auth.service';
 
 export class AllDeviceUserId {
   constructor(public userId: string) {}
@@ -23,10 +18,10 @@ export class AllDeviceUserIdHandler implements IQueryHandler<AllDeviceUserId> {
     return device.map(
       (d) =>
         ({
-          ip: d.ip,
-          deviceName: d.deviceName,
-          lastActiveDate: d.lastActiveDate,
           deviceId: d.deviceId,
+          ip: d.ip,
+          lastActiveDate: d.lastActiveDate,
+          title: d.title,
         }) as DeviceEntity,
     );
   }

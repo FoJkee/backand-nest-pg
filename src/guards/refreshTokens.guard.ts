@@ -7,6 +7,7 @@ import {
 import { AuthService } from '../features/auth/infrastructure/auth.service';
 import { DeviceService } from '../features/device/api/device.service';
 import { UserService } from '../features/user/api/user.service';
+import { DeviceEntity } from '../features/device/entity/device.entity';
 
 @Injectable()
 export class RefreshTokensGuard implements CanActivate {
@@ -31,12 +32,9 @@ export class RefreshTokensGuard implements CanActivate {
       dataToken.userId,
     );
 
-    if (
-      !device ||
-      (device && device.lastActiveDate.toISOString() !== iatDataToken)
-    )
+    if (!device || (device && device.lastActiveDate !== iatDataToken))
       throw new UnauthorizedException();
-    //
+
     if (device.userId !== dataToken.userId) throw new UnauthorizedException();
 
     const user = await this.userService.findUserId(dataToken.userId);
