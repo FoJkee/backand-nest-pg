@@ -45,14 +45,14 @@ export class AuthController {
 
   @Post('registration')
   @UseGuards(ThrottlerGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(204)
   async registration(@Body() registrationDto: RegistrationDto) {
     return await this.commandBus.execute(new Registration(registrationDto));
   }
 
   @Post('registration-email-resending')
   @UseGuards(ThrottlerGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(204)
   async registrationEmailResending(
     @Body() registrationEmailResendingDto: RegistrationEmailResendingDto,
   ) {

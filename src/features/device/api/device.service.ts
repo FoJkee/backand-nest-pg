@@ -27,9 +27,9 @@ export class DeviceService {
     lastActiveDate: string,
   ) {
     return this.deviceRepository.delete({
-      deviceId: deviceId,
-      userId: deviceId,
-      lastActiveDate: lastActiveDate,
+      deviceId,
+      userId,
+      lastActiveDate,
     });
   }
   async findDeviceUserId(
@@ -53,6 +53,7 @@ export class DeviceService {
       userId,
     });
   }
+
   async deleteAllOtherSession(deviceId: string, userId: string) {
     await this.deviceRepository.delete({
       userId,
@@ -68,9 +69,10 @@ export class DeviceService {
       await this.deviceRepository.update(
         {
           userId,
+          deviceId,
         },
 
-        { deviceId, lastActiveDate },
+        { lastActiveDate },
       );
       return true;
     } catch (e) {
