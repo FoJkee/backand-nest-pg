@@ -19,6 +19,7 @@ export class CreateSaBlogsHandler implements ICommandHandler<CreateSaBlogs> {
       createdAt: new Date().toISOString(),
       isMembership: false,
     };
+
     await this.blogsSaService.createSaBlogs(newBlog);
     return newBlog;
   }

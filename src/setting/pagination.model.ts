@@ -53,5 +53,6 @@ export class PaginationModelsView {
     public sortDirection: string,
     public searchLoginTerm?: string,
     public searchEmailTerm?: string,
+    public searchNameTerm?: string,
   ) {}
 }

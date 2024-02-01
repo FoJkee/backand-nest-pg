@@ -38,6 +38,11 @@ import { AboutMeHandler } from './features/auth/use-cases/aboutMe';
 import { RefreshTokenHandler } from './features/auth/use-cases/refreshToken';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerConfigService } from './config/throttler.config';
+import { BlogsSaController } from './features/blogs-sa/api/blogs.sa.controller';
+import { CreateSaBlogsHandler } from './features/blogs-sa/use-cases/createSaBlogs';
+import { BlogsSaService } from './features/blogs-sa/api/blogs.sa.service';
+import { BlogsSaEntity } from './features/blogs-sa/entity/blogs.sa.entity';
+import { GetSaBlogsHandler } from './features/blogs-sa/use-cases/getSaBlogs';
 
 const services = [
   UserService,
@@ -46,6 +51,7 @@ const services = [
   TestingService,
   JwtService,
   EmailService,
+  BlogsSaService,
 ];
 
 const controllers = [
@@ -53,6 +59,7 @@ const controllers = [
   AuthController,
   DeviceController,
   TestingController,
+  BlogsSaController,
 ];
 
 const handlers = [
@@ -69,6 +76,8 @@ const handlers = [
   DeleteAllOtherSessionHandler,
   AboutMeHandler,
   RefreshTokenHandler,
+  CreateSaBlogsHandler,
+  GetSaBlogsHandler,
 ];
 
 // const entity = [UserEntity, DeviceEntity];
@@ -77,7 +86,7 @@ const validators = [UserFindEmailValidator, UserFindLoginValidator];
 const guards = [RefreshTokensGuard];
 
 const imports = [
-  TypeOrmModule.forFeature([UserEntity, DeviceEntity]),
+  TypeOrmModule.forFeature([UserEntity, DeviceEntity, BlogsSaEntity]),
   CqrsModule,
   ConfigModule.forRoot({
     isGlobal: true,

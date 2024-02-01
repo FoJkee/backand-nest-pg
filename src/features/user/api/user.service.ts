@@ -40,7 +40,8 @@ export class UserService {
       this.userRepository.find({
         where,
         order: {
-          [userQueryDto.sortBy]: userQueryDto.sortDirection,
+          [userQueryDto.sortBy]:
+            userQueryDto.sortDirection === 'asc' ? 'asc' : 'desc',
         },
         take: +userQueryDto.pageSize,
         skip: +pageSkip,

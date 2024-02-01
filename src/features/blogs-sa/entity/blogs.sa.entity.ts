@@ -4,14 +4,19 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class BlogsSaEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column({ type: 'varchar' })
+
+  @Column({ type: 'varchar', name: 'name' })
   name: string;
-  @Column({ type: 'varchar' })
+
+  @Column({ type: 'varchar', name: 'description' })
   description: string;
-  @Column({ type: 'varchar' })
+
+  @Column({ type: 'varchar', name: 'websiteurl' })
   websiteUrl: string;
-  @Column({ type: 'varchar' })
+
+  @Column({ type: 'varchar', name: 'createdat' })
   createdAt: string;
-  @Column({ type: 'boolean', default: false })
+
+  @Column({ type: 'boolean', default: false, name: 'ismembership' })
   isMembership: boolean;
 }
