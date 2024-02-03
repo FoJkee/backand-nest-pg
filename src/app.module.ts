@@ -38,11 +38,19 @@ import { AboutMeHandler } from './features/auth/use-cases/aboutMe';
 import { RefreshTokenHandler } from './features/auth/use-cases/refreshToken';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerConfigService } from './config/throttler.config';
-import { BlogsSaController } from './features/blogs-sa/api/blogs.sa.controller';
-import { CreateSaBlogsHandler } from './features/blogs-sa/use-cases/createSaBlogs';
-import { BlogsSaService } from './features/blogs-sa/api/blogs.sa.service';
-import { BlogsSaEntity } from './features/blogs-sa/entity/blogs.sa.entity';
-import { GetSaBlogsHandler } from './features/blogs-sa/use-cases/getSaBlogs';
+import { BlogsSaController } from './features/sa/api/blogs.sa.controller';
+import { CreateSaBlogsHandler } from './features/sa/use-cases/createSaBlogs';
+import { BlogsSaService } from './features/sa/api/blogs.sa.service';
+import { BlogsSaEntity } from './features/sa/entity/blogs.sa.entity';
+import { GetSaBlogsHandler } from './features/sa/use-cases/getSaBlogs';
+import { DeleteSaBlogsHandler } from './features/sa/use-cases/deleteSaBlogs';
+import { UpdateSaBlogsHandler } from './features/sa/use-cases/updateSaBlogs';
+import { CreatePostSaBlogsHandler } from './features/sa/use-cases/createPostSaBlogs';
+import { PostsSaEntity } from './features/sa/entity/posts.sa.entity';
+import { PostsSaService } from './features/sa/api/posts.sa.service';
+import { GetPostSaBlogsHandler } from './features/sa/use-cases/getPostSaBlogs';
+import { UpdatePostsSaBlogHandler } from './features/sa/use-cases/updatePostsSaBlog';
+import { DeletePostsSaBlogHandler } from './features/sa/use-cases/deletePostsSaBlog';
 
 const services = [
   UserService,
@@ -52,6 +60,7 @@ const services = [
   JwtService,
   EmailService,
   BlogsSaService,
+  PostsSaService,
 ];
 
 const controllers = [
@@ -78,6 +87,12 @@ const handlers = [
   RefreshTokenHandler,
   CreateSaBlogsHandler,
   GetSaBlogsHandler,
+  DeleteSaBlogsHandler,
+  UpdateSaBlogsHandler,
+  CreatePostSaBlogsHandler,
+  GetPostSaBlogsHandler,
+  UpdatePostsSaBlogHandler,
+  DeletePostsSaBlogHandler,
 ];
 
 // const entity = [UserEntity, DeviceEntity];
@@ -86,7 +101,12 @@ const validators = [UserFindEmailValidator, UserFindLoginValidator];
 const guards = [RefreshTokensGuard];
 
 const imports = [
-  TypeOrmModule.forFeature([UserEntity, DeviceEntity, BlogsSaEntity]),
+  TypeOrmModule.forFeature([
+    UserEntity,
+    DeviceEntity,
+    BlogsSaEntity,
+    PostsSaEntity,
+  ]),
   CqrsModule,
   ConfigModule.forRoot({
     isGlobal: true,

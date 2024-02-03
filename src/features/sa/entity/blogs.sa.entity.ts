@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { PostsSaEntity } from './posts.sa.entity';
 
 @Entity({ name: 'blogs' })
 export class BlogsSaEntity extends BaseEntity {
@@ -19,4 +26,7 @@ export class BlogsSaEntity extends BaseEntity {
 
   @Column({ type: 'boolean', default: false, name: 'ismembership' })
   isMembership: boolean;
+
+  @OneToMany(() => PostsSaEntity, (posts) => posts.blogId)
+  posts: PostsSaEntity[];
 }
