@@ -42,7 +42,6 @@ import { BlogsSaController } from './features/sa/api/blogs.sa.controller';
 import { CreateSaBlogsHandler } from './features/sa/use-cases/createSaBlogs';
 import { BlogsSaService } from './features/sa/api/blogs.sa.service';
 import { BlogsSaEntity } from './features/sa/entity/blogs.sa.entity';
-import { GetSaBlogsHandler } from './features/sa/use-cases/getSaBlogs';
 import { DeleteSaBlogsHandler } from './features/sa/use-cases/deleteSaBlogs';
 import { UpdateSaBlogsHandler } from './features/sa/use-cases/updateSaBlogs';
 import { CreatePostSaBlogsHandler } from './features/sa/use-cases/createPostSaBlogs';
@@ -86,7 +85,6 @@ const handlers = [
   AboutMeHandler,
   RefreshTokenHandler,
   CreateSaBlogsHandler,
-  GetSaBlogsHandler,
   DeleteSaBlogsHandler,
   UpdateSaBlogsHandler,
   CreatePostSaBlogsHandler,

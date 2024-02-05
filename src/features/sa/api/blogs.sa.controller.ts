@@ -25,7 +25,7 @@ import { BlogsSaService } from './blogs.sa.service';
 import { UpdatePostsSaBlog } from '../use-cases/updatePostsSaBlog';
 import { DeletePostsSaBlog } from '../use-cases/deletePostsSaBlog';
 import { BasicAuthGuard } from '../../../guards/basic.auth';
-import { UserId } from '../../../decorators/user.decorator';
+import { User } from '../../../decorators/user.decorator';
 
 @UseGuards(BasicAuthGuard)
 @Controller('sa/blogs')
@@ -37,11 +37,12 @@ export class BlogsSaController {
     private readonly blogsSaService: BlogsSaService,
   ) {}
 
+  //userId - auth or basic?
   @Post()
   @HttpCode(201)
   async createSaBlog(
     @Body() createBlogsSaDto: CreateBlogsSaDto,
-    @UserId() userId: string,
+    @User() userId: string,
   ) {
     return await this.commandBus.execute(
       new CreateSaBlogs(createBlogsSaDto, userId),
@@ -50,15 +51,17 @@ export class BlogsSaController {
 
   @Get()
   @HttpCode(200)
-  async getSaBlogs(@Query() blogQueryDto: BlogQueryDto) {
-    // return await this.queryBus.execute(new GetSaBlogs(blogQueryDto));
-    return await this.blogsSaService.getSaBlogs(blogQueryDto);
+  async getSaBlogs(
+    @Query() blogQueryDto: BlogQueryDto,
+    @User() userId: string,
+  ) {
+    return await this.blogsSaService.getSaBlogs(blogQueryDto, userId);
   }
 
   @Delete(':blogId')
   @HttpCode(204)
-  async deleteSaBlog(@Param('blogId') blogId: string) {
-    return await this.commandBus.execute(new DeleteSaBlogs(blogId));
+  async deleteSaBlog(@Param('blogId') blogId: string, @User() userId: string) {
+    return await this.commandBus.execute(new DeleteSaBlogs(blogId, userId));
   }
 
   @Put(':blogId')
@@ -66,9 +69,10 @@ export class BlogsSaController {
   async updateSaBlog(
     @Param('blogId') blogId: string,
     @Body() createBlogsSaDto: CreateBlogsSaDto,
+    @User() userId: string,
   ) {
     return await this.commandBus.execute(
-      new UpdateSaBlogs(blogId, createBlogsSaDto),
+      new UpdateSaBlogs(blogId, createBlogsSaDto, userId),
     );
   }
 

@@ -27,6 +27,7 @@ export class CreateSaBlogsHandler implements ICommandHandler<CreateSaBlogs> {
 
     const result = await this.blogsSaService.createSaBlogs({ ...newBlog });
     if (!result) throw new BadRequestException();
+
     return {
       id: randomUUID(),
       name: command.createBlogsSaDto.name,

@@ -1,9 +1,15 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { DeviceType } from './device.decorators';
 
 export const UserId = createParamDecorator(
-  (data: string, ctx: ExecutionContext): DeviceType => {
+  (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.user.id;
+  },
+);
+
+export const User = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user;
   },
 );

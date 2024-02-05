@@ -22,7 +22,6 @@ export class PostsSaService {
   }
 
   async getPostsForBlogs(
-    // paginationPostForBlog: PaginationModelsView,
     postsForBlogQueryDto: PostsForBlogQueryDto,
     blogId: string,
   ): Promise<PaginationView<PostsSaEntity[]>> {
