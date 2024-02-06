@@ -25,8 +25,9 @@ export class CreateSaBlogsHandler implements ICommandHandler<CreateSaBlogs> {
       isMembership: false,
     };
 
-    const result = await this.blogsSaService.createSaBlogs({ ...newBlog });
-    if (!result) throw new BadRequestException();
+    const result = await this.blogsSaService.createSaBlogs(newBlog);
+    if (!result)
+      throw new BadRequestException('Failed to create super admin blog');
 
     return {
       id: randomUUID(),

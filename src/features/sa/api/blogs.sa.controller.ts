@@ -81,9 +81,10 @@ export class BlogsSaController {
   async createPostSaBlog(
     @Param('blogId') blogId: string,
     @Body() createPostForBlogsSaDto: CreatePostForBlogsSaDto,
+    @User() userId: string,
   ) {
     return await this.commandBus.execute(
-      new CreatePostSaBlogs(blogId, createPostForBlogsSaDto),
+      new CreatePostSaBlogs(blogId, createPostForBlogsSaDto, userId),
     );
   }
 
@@ -92,6 +93,7 @@ export class BlogsSaController {
   async getPostSaBlog(
     @Query() postsForBlogQueryDto: PostsForBlogQueryDto,
     @Param('blogId') blogId: string,
+    @User() userId: string,
   ) {
     // return await this.queryBus.execute(
     //   new GetPostSaBlogs(postsForBlogQueryDto, blogId),
@@ -99,6 +101,7 @@ export class BlogsSaController {
     return await this.postsSaService.getPostsForBlogs(
       postsForBlogQueryDto,
       blogId,
+      userId,
     );
   }
 
@@ -107,10 +110,11 @@ export class BlogsSaController {
   async updatePostsSaBlog(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
+    @User() userId: string,
     @Body() createPostForBlogsSaDto: CreatePostForBlogsSaDto,
   ) {
     return await this.commandBus.execute(
-      new UpdatePostsSaBlog(blogId, postId, createPostForBlogsSaDto),
+      new UpdatePostsSaBlog(blogId, postId, createPostForBlogsSaDto, userId),
     );
   }
 
@@ -119,7 +123,10 @@ export class BlogsSaController {
   async deletePostsSaBlog(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
+    @User() userId: string,
   ) {
-    return await this.commandBus.execute(new DeletePostsSaBlog(blogId, postId));
+    return await this.commandBus.execute(
+      new DeletePostsSaBlog(blogId, postId, userId),
+    );
   }
 }

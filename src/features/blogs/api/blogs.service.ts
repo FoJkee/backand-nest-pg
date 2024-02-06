@@ -1,25 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, ILike, Repository } from 'typeorm';
-import { BlogsSaEntity } from '../entity/blogs.sa.entity';
-import { BlogQueryDto, CreateBlogsSaDto } from '../dto/blogs.sa.dto';
+import { BlogsSaEntity } from '../../sa/entity/blogs.sa.entity';
+import { BlogQueryDto } from '../../sa/dto/blogs.sa.dto';
 import { PaginationView } from '../../../setting/pagination.model';
-import { BlogViewModels } from '../models/blogs.sa.models';
 
 @Injectable()
-export class BlogsSaService {
-  constructor(
-    @InjectRepository(BlogsSaEntity)
-    private readonly blogsSaRepository: Repository<BlogsSaEntity>,
-  ) {}
+export class BlogsService {
+  @InjectRepository(BlogsSaEntity)
+  private readonly blogsSaRepository: Repository<BlogsSaEntity>;
 
-  async createSaBlogs(newBlog: BlogViewModels): Promise<BlogsSaEntity> {
-    return this.blogsSaRepository.create(newBlog);
+  async findBlogId(blogId: string) {
+    return await this.blogsSaRepository.findOneBy({ id: blogId });
   }
 
-  async getSaBlogs(
+  async getBlogs(
     blogQueryDto: BlogQueryDto,
-    userId: string,
   ): Promise<PaginationView<BlogsSaEntity[]>> {
     const searchNameTerm = blogQueryDto.searchNameTerm ?? '';
 
@@ -27,7 +23,6 @@ export class BlogsSaService {
 
     const where: FindManyOptions<BlogsSaEntity>['where'] = {
       name: ILike(`%${searchNameTerm}%`),
-      userId,
     };
 
     const [blogs, totalCount] = await Promise.all([
@@ -50,23 +45,5 @@ export class BlogsSaService {
       totalCount: totalCount,
       items: blogs,
     };
-  }
-  async findBlogId(blogId: string): Promise<BlogsSaEntity> {
-    return this.blogsSaRepository.findOneBy({ id: blogId });
-  }
-
-  async deleteBlogId(blogId: string) {
-    return this.blogsSaRepository.delete({ id: blogId });
-  }
-
-  async updateBlogId(blogId: string, createBlogsSaDto: CreateBlogsSaDto) {
-    return await this.blogsSaRepository.update(
-      { id: blogId },
-      {
-        name: createBlogsSaDto.name,
-        description: createBlogsSaDto.description,
-        websiteUrl: createBlogsSaDto.websiteUrl,
-      },
-    );
   }
 }

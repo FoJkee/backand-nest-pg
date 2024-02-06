@@ -24,11 +24,12 @@ export class PostsSaService {
   async getPostsForBlogs(
     postsForBlogQueryDto: PostsForBlogQueryDto,
     blogId: string,
+    userId: string,
   ): Promise<PaginationView<PostsSaEntity[]>> {
     const pageSkip =
       postsForBlogQueryDto.pageSize * (postsForBlogQueryDto.pageNumber - 1);
 
-    const where: FindManyOptions['where'] = { blogId };
+    const where: FindManyOptions['where'] = { blogId, userId };
 
     const [posts, totalCount] = await Promise.all([
       this.postsSaRepository.find({

@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsSaService } from '../api/blogs.sa.service';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { myStatusView } from '../models/posts.sa.models';
 import { PostsSaService } from '../api/posts.sa.service';
@@ -10,6 +10,7 @@ export class CreatePostSaBlogs {
   constructor(
     public readonly blogId: string,
     public readonly createPostForBlogsSaDto: CreatePostForBlogsSaDto,
+    public readonly userId: string,
   ) {}
 }
 
@@ -25,6 +26,8 @@ export class CreatePostSaBlogsHandler
   async execute(command: CreatePostSaBlogs) {
     const findBlog = await this.blogsSaService.findBlogId(command.blogId);
     if (!findBlog) throw new NotFoundException();
+
+    if (findBlog.userId !== command.userId) throw new ForbiddenException();
 
     const newPost = {
       id: randomUUID(),
