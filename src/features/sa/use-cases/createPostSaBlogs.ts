@@ -27,14 +27,14 @@ export class CreatePostSaBlogsHandler
     const findBlog = await this.blogsSaService.findBlogId(command.blogId);
     if (!findBlog) throw new NotFoundException();
 
-    if (findBlog.userId !== command.userId) throw new ForbiddenException();
+    // if (findBlog.userId !== command.userId) throw new ForbiddenException();
 
     const newPost = {
       id: randomUUID(),
       title: command.createPostForBlogsSaDto.title,
       shortDescription: command.createPostForBlogsSaDto.shortDescription,
       content: command.createPostForBlogsSaDto.content,
-      blogId: command.blogId,
+      blogId: findBlog.id,
       blogName: findBlog.name,
       createdAt: new Date().toISOString(),
       extendedLikesInfo: {

@@ -27,7 +27,7 @@ import { UserId } from '../../../decorators/user.decorator';
 import { Logout } from '../use-cases/logout';
 import { RefreshTokensGuard } from '../../../guards/refreshTokens.guard';
 import { AboutMe } from '../use-cases/aboutMe';
-import { BearerAuth } from '../../../guards/bearer.auth';
+import { BearerAuthUserId } from '../../../guards/bearer.auth';
 import {
   RefreshToken,
   RefreshTokenDecorator,
@@ -126,7 +126,7 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(BearerAuth)
+  @UseGuards(BearerAuthUserId)
   @HttpCode(HttpStatus.OK)
   async aboutMe(@UserId() userId: string) {
     return await this.queryBus.execute(new AboutMe(userId));

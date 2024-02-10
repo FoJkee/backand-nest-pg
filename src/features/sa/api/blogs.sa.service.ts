@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, ILike, Repository } from 'typeorm';
-import { BlogsSaEntity } from '../entity/blogs.sa.entity';
+import { BlogsEntity } from '../entity/blogsEntity';
 import { BlogQueryDto, CreateBlogsSaDto } from '../dto/blogs.sa.dto';
 import { PaginationView } from '../../../setting/pagination.model';
 import { BlogViewModels } from '../models/blogs.sa.models';
@@ -9,26 +9,28 @@ import { BlogViewModels } from '../models/blogs.sa.models';
 @Injectable()
 export class BlogsSaService {
   constructor(
-    @InjectRepository(BlogsSaEntity)
-    private readonly blogsSaRepository: Repository<BlogsSaEntity>,
+    @InjectRepository(BlogsEntity)
+    private readonly blogsSaRepository: Repository<BlogsEntity>,
   ) {}
 
-  async createSaBlogs(newBlog: BlogViewModels): Promise<BlogsSaEntity> {
-    return this.blogsSaRepository.create(newBlog);
+  async createSaBlogs(newBlog: BlogViewModels): Promise<BlogsEntity> {
+    return this.blogsSaRepository.save(newBlog);
   }
 
   async getSaBlogs(
     blogQueryDto: BlogQueryDto,
     userId: string,
-  ): Promise<PaginationView<BlogsSaEntity[]>> {
-    const searchNameTerm = blogQueryDto.searchNameTerm ?? '';
+  ): Promise<PaginationView<BlogsEntity[]>> {
+    const searchNameTerm = blogQueryDto.searchNameTerm
+      ? blogQueryDto.searchNameTerm.toString()
+      : '';
 
     const pageSkip = +blogQueryDto.pageSize * (+blogQueryDto.pageNumber - 1);
 
-    const where: FindManyOptions<BlogsSaEntity>['where'] = {
+    const where: FindManyOptions<BlogsEntity>['where'] = {
       name: ILike(`%${searchNameTerm}%`),
       userId,
-    };
+    }[0];
 
     const [blogs, totalCount] = await Promise.all([
       this.blogsSaRepository.find({
@@ -51,7 +53,8 @@ export class BlogsSaService {
       items: blogs,
     };
   }
-  async findBlogId(blogId: string): Promise<BlogsSaEntity> {
+
+  async findBlogId(blogId: string): Promise<BlogsEntity> {
     return this.blogsSaRepository.findOneBy({ id: blogId });
   }
 

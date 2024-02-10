@@ -8,7 +8,7 @@ import { AuthService } from '../features/auth/infrastructure/auth.service';
 import { UserService } from '../features/user/api/user.service';
 
 @Injectable()
-export class BearerAuth implements CanActivate {
+export class BearerAuthUserId implements CanActivate {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,

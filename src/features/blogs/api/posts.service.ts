@@ -20,7 +20,7 @@ export class PostsService {
     const pageSkip =
       postsForBlogQueryDto.pageSize * (postsForBlogQueryDto.pageNumber - 1);
 
-    const where: FindManyOptions['where'] = { blogId };
+    const where: FindManyOptions['where'] = { blogId }[0];
 
     const [posts, totalCount] = await Promise.all([
       this.postsRepository.find({

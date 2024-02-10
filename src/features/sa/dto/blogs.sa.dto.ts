@@ -23,16 +23,16 @@ export class BlogQueryDto {
   searchNameTerm?: string | null = null;
   @IsString()
   @IsOptional()
-  sortBy: string = 'createdAt';
+  sortBy: string | null = 'createdAt';
   @IsString()
   @IsOptional()
-  sortDirection: string = 'desc';
+  sortDirection: string | null = 'desc';
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
-  pageNumber: number = 1;
+  pageNumber: number | null = 1;
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
-  pageSize: number = 10;
+  pageSize: number | null = 10;
 }

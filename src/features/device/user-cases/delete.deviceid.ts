@@ -18,6 +18,7 @@ export class DeleteDeviceIdHandler implements ICommandHandler<DeleteDeviceId> {
     if (!session) throw new NotFoundException();
 
     if (session.userId !== command.userId) throw new ForbiddenException();
+
     return await this.deviceService.deleteDeviceId(
       command.deviceId,
       command.userId,

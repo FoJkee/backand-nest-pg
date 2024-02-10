@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../../user/entity/user.entity';
 import { DeviceEntity } from '../../device/entity/device.entity';
-import { BlogsSaEntity } from '../../sa/entity/blogs.sa.entity';
+import { BlogsEntity } from '../../sa/entity/blogsEntity';
 import { PostsSaEntity } from '../../sa/entity/posts.sa.entity';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class TestingService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(DeviceEntity)
     private readonly deviceRepository: Repository<DeviceEntity>,
-    @InjectRepository(BlogsSaEntity)
-    private readonly blogsSaRepository: Repository<BlogsSaEntity>,
+    @InjectRepository(BlogsEntity)
+    private readonly blogsSaRepository: Repository<BlogsEntity>,
     @InjectRepository(PostsSaEntity)
     private readonly postsSaRepository: Repository<PostsSaEntity>,
   ) {}

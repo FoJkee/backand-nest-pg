@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DeviceEntity } from '../../device/entity/device.entity';
-import { BlogsSaEntity } from '../../sa/entity/blogs.sa.entity';
+import { BlogsEntity } from '../../sa/entity/blogsEntity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -34,6 +34,6 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => DeviceEntity, (device) => device.userId)
   devices: DeviceEntity[];
 
-  @OneToMany(() => BlogsSaEntity, (blog) => blog.userId)
-  blogs: BlogsSaEntity[];
+  @OneToMany(() => BlogsEntity, (blog) => blog.userId)
+  blogs: BlogsEntity[];
 }

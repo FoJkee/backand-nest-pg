@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, ILike, Repository } from 'typeorm';
-import { BlogsSaEntity } from '../../sa/entity/blogs.sa.entity';
+import { BlogsEntity } from '../../sa/entity/blogsEntity';
 import { BlogQueryDto } from '../../sa/dto/blogs.sa.dto';
 import { PaginationView } from '../../../setting/pagination.model';
 
 @Injectable()
 export class BlogsService {
-  @InjectRepository(BlogsSaEntity)
-  private readonly blogsSaRepository: Repository<BlogsSaEntity>;
+  @InjectRepository(BlogsEntity)
+  private readonly blogsSaRepository: Repository<BlogsEntity>;
 
   async findBlogId(blogId: string) {
     return await this.blogsSaRepository.findOneBy({ id: blogId });
@@ -16,14 +16,14 @@ export class BlogsService {
 
   async getBlogs(
     blogQueryDto: BlogQueryDto,
-  ): Promise<PaginationView<BlogsSaEntity[]>> {
+  ): Promise<PaginationView<BlogsEntity[]>> {
     const searchNameTerm = blogQueryDto.searchNameTerm ?? '';
 
     const pageSkip = +blogQueryDto.pageSize * (+blogQueryDto.pageNumber - 1);
 
-    const where: FindManyOptions<BlogsSaEntity>['where'] = {
+    const where: FindManyOptions<BlogsEntity>['where'] = {
       name: ILike(`%${searchNameTerm}%`),
-    };
+    }[0];
 
     const [blogs, totalCount] = await Promise.all([
       this.blogsSaRepository.find({

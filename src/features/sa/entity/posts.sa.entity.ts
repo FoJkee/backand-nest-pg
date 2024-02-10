@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { BlogsEntity } from './blogsEntity';
 
 @Entity({ name: 'posts' })
 export class PostsSaEntity extends BaseEntity {
@@ -14,7 +22,8 @@ export class PostsSaEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'content' })
   content: string;
 
-  @Column({ type: 'uuid', name: 'blogid' })
+  @ManyToOne(() => BlogsEntity, (blog) => blog.posts)
+  @JoinColumn({ name: 'blogid' })
   blogId: string;
 
   @Column({ type: 'varchar', name: 'blogname' })

@@ -11,7 +11,7 @@ import { PostsSaEntity } from './posts.sa.entity';
 import { UserEntity } from '../../user/entity/user.entity';
 
 @Entity({ name: 'blogs' })
-export class BlogsSaEntity extends BaseEntity {
+export class BlogsEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -41,15 +41,18 @@ import { ThrottlerConfigService } from './config/throttler.config';
 import { BlogsSaController } from './features/sa/api/blogs.sa.controller';
 import { CreateSaBlogsHandler } from './features/sa/use-cases/createSaBlogs';
 import { BlogsSaService } from './features/sa/api/blogs.sa.service';
-import { BlogsSaEntity } from './features/sa/entity/blogs.sa.entity';
+import { BlogsEntity } from './features/sa/entity/blogsEntity';
 import { DeleteSaBlogsHandler } from './features/sa/use-cases/deleteSaBlogs';
 import { UpdateSaBlogsHandler } from './features/sa/use-cases/updateSaBlogs';
 import { CreatePostSaBlogsHandler } from './features/sa/use-cases/createPostSaBlogs';
 import { PostsSaEntity } from './features/sa/entity/posts.sa.entity';
 import { PostsSaService } from './features/sa/api/posts.sa.service';
-import { GetPostSaBlogsHandler } from './features/sa/use-cases/getPostSaBlogs';
 import { UpdatePostsSaBlogHandler } from './features/sa/use-cases/updatePostsSaBlog';
 import { DeletePostsSaBlogHandler } from './features/sa/use-cases/deletePostsSaBlog';
+import { BlogsController } from './features/blogs/api/blogs.controller';
+import { BlogsService } from './features/blogs/api/blogs.service';
+import { PostsService } from './features/blogs/api/posts.service';
+import { FindBlogIdHandler } from './features/blogs/use-cases/findBlogId';
 
 const services = [
   UserService,
@@ -60,6 +63,8 @@ const services = [
   EmailService,
   BlogsSaService,
   PostsSaService,
+  BlogsService,
+  PostsService,
 ];
 
 const controllers = [
@@ -68,6 +73,7 @@ const controllers = [
   DeviceController,
   TestingController,
   BlogsSaController,
+  BlogsController,
 ];
 
 const handlers = [
@@ -88,9 +94,9 @@ const handlers = [
   DeleteSaBlogsHandler,
   UpdateSaBlogsHandler,
   CreatePostSaBlogsHandler,
-  GetPostSaBlogsHandler,
   UpdatePostsSaBlogHandler,
   DeletePostsSaBlogHandler,
+  FindBlogIdHandler,
 ];
 
 // const entity = [UserEntity, DeviceEntity];
@@ -102,7 +108,7 @@ const imports = [
   TypeOrmModule.forFeature([
     UserEntity,
     DeviceEntity,
-    BlogsSaEntity,
+    BlogsEntity,
     PostsSaEntity,
   ]),
   CqrsModule,

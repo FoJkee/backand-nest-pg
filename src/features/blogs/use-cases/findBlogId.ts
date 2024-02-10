@@ -1,6 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { BlogsService } from '../api/blogs.service';
+import { BlogsSaService } from '../../sa/api/blogs.sa.service';
 
 export class FindBlogId {
   constructor(public readonly blogId: string) {}
@@ -12,12 +13,6 @@ export class FindBlogIdHandler implements IQueryHandler<FindBlogId> {
   async execute(query: FindBlogId) {
     const findBlogId = await this.blogsService.findBlogId(query.blogId);
     if (!findBlogId) throw new NotFoundException();
-    return {
-      id: findBlogId.id,
-      name: findBlogId.name,
-      description: findBlogId.description,
-      websiteUrl: findBlogId.websiteUrl,
-      createdAt: findBlogId.createdAt,
-    };
+    return findBlogId;
   }
 }
