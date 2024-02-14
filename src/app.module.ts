@@ -45,14 +45,21 @@ import { BlogsEntity } from './features/sa/entity/blogsEntity';
 import { DeleteSaBlogsHandler } from './features/sa/use-cases/deleteSaBlogs';
 import { UpdateSaBlogsHandler } from './features/sa/use-cases/updateSaBlogs';
 import { CreatePostSaBlogsHandler } from './features/sa/use-cases/createPostSaBlogs';
-import { PostsSaEntity } from './features/sa/entity/posts.sa.entity';
+import { PostsEntity } from './features/sa/entity/posts.sa.entity';
 import { PostsSaService } from './features/sa/api/posts.sa.service';
 import { UpdatePostsSaBlogHandler } from './features/sa/use-cases/updatePostsSaBlog';
 import { DeletePostsSaBlogHandler } from './features/sa/use-cases/deletePostsSaBlog';
 import { BlogsController } from './features/blogs/api/blogs.controller';
 import { BlogsService } from './features/blogs/api/blogs.service';
-import { PostsService } from './features/blogs/api/posts.service';
 import { FindBlogIdHandler } from './features/blogs/use-cases/findBlogId';
+import { PostsController } from './features/posts/api/posts.controller';
+import { PostsService } from './features/posts/api/posts.service';
+import { CommentsService } from './features/comments/api/comments.service';
+import { CreateCommentsForPostHandler } from './features/posts/use-cases/createCommentsForPost';
+import { CommentsEntity } from './features/comments/entity/commentsEntity';
+import { LikesEntity } from './features/likes/entity/likes.entity';
+import { UpdatePostIdLikeHandler } from './features/posts/use-cases/updatePostIdLike';
+import { FindPostIdHandler } from './features/posts/use-cases/findPostId';
 
 const services = [
   UserService,
@@ -65,6 +72,7 @@ const services = [
   PostsSaService,
   BlogsService,
   PostsService,
+  CommentsService,
 ];
 
 const controllers = [
@@ -74,6 +82,7 @@ const controllers = [
   TestingController,
   BlogsSaController,
   BlogsController,
+  PostsController,
 ];
 
 const handlers = [
@@ -97,6 +106,9 @@ const handlers = [
   UpdatePostsSaBlogHandler,
   DeletePostsSaBlogHandler,
   FindBlogIdHandler,
+  CreateCommentsForPostHandler,
+  UpdatePostIdLikeHandler,
+  FindPostIdHandler,
 ];
 
 // const entity = [UserEntity, DeviceEntity];
@@ -109,7 +121,9 @@ const imports = [
     UserEntity,
     DeviceEntity,
     BlogsEntity,
-    PostsSaEntity,
+    PostsEntity,
+    CommentsEntity,
+    LikesEntity,
   ]),
   CqrsModule,
   ConfigModule.forRoot({

@@ -7,7 +7,6 @@ export class DeletePostsSaBlog {
   constructor(
     public readonly blogId: string,
     public readonly postId: string,
-    public readonly userId: string,
   ) {}
 }
 
@@ -22,10 +21,11 @@ export class DeletePostsSaBlogHandler
   async execute(command: DeletePostsSaBlog) {
     const findBlog = await this.blogsSaService.findBlogId(command.blogId);
     if (!findBlog) throw new NotFoundException();
-    if (findBlog.userId !== command.userId) throw new ForbiddenException();
+
     const findPost = await this.postsSaService.findPostId(command.postId);
     if (!findPost) throw new NotFoundException();
-    if (findPost.blogId !== command.blogId)
-      return await this.postsSaService.deletePostsForBlogId(command.postId);
+
+    if (findPost.blogId !== command.blogId) throw new ForbiddenException();
+    return await this.postsSaService.deletePostsForBlogId(command.postId);
   }
 }

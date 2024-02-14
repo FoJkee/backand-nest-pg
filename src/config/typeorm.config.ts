@@ -2,9 +2,18 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { UserEntity } from '../features/user/entity/user.entity';
 import { DeviceEntity } from '../features/device/entity/device.entity';
 import { BlogsEntity } from '../features/sa/entity/blogsEntity';
-import { PostsSaEntity } from '../features/sa/entity/posts.sa.entity';
+import { PostsEntity } from '../features/sa/entity/posts.sa.entity';
+import { CommentsEntity } from '../features/comments/entity/commentsEntity';
+import { LikesEntity } from '../features/likes/entity/likes.entity';
 
-const entity = [UserEntity, DeviceEntity, BlogsEntity, PostsSaEntity];
+const entity = [
+  UserEntity,
+  DeviceEntity,
+  BlogsEntity,
+  PostsEntity,
+  CommentsEntity,
+  LikesEntity,
+];
 
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {

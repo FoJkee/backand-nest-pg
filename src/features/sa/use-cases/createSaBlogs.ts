@@ -5,10 +5,7 @@ import { BlogsSaService } from '../api/blogs.sa.service';
 import { BadRequestException } from '@nestjs/common';
 
 export class CreateSaBlogs {
-  constructor(
-    public readonly createBlogsSaDto: CreateBlogsSaDto,
-    public readonly userId: string,
-  ) {}
+  constructor(public readonly createBlogsSaDto: CreateBlogsSaDto) {}
 }
 
 @CommandHandler(CreateSaBlogs)
@@ -17,7 +14,6 @@ export class CreateSaBlogsHandler implements ICommandHandler<CreateSaBlogs> {
   async execute(command: CreateSaBlogs) {
     const newBlog = {
       id: randomUUID(),
-      userId: command.userId,
       name: command.createBlogsSaDto.name,
       description: command.createBlogsSaDto.description,
       websiteUrl: command.createBlogsSaDto.websiteUrl,
@@ -28,13 +24,6 @@ export class CreateSaBlogsHandler implements ICommandHandler<CreateSaBlogs> {
     const result = await this.blogsSaService.createSaBlogs(newBlog);
     if (!result) throw new BadRequestException();
 
-    return {
-      id: result.id,
-      name: result.name,
-      description: result.description,
-      websiteUrl: result.websiteUrl,
-      createdAt: result.createdAt,
-      isMembership: result.isMembership,
-    };
+    return newBlog;
   }
 }

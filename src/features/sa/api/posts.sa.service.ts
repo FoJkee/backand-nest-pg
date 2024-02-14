@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostViewModels } from '../models/posts.sa.models';
-import { PostsSaEntity } from '../entity/posts.sa.entity';
+import { myStatusView, PostViewModels } from '../models/posts.sa.models';
+import { PostsEntity } from '../entity/posts.sa.entity';
 import { PaginationView } from '../../../setting/pagination.model';
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
 import {
@@ -13,23 +13,22 @@ import {
 @Injectable()
 export class PostsSaService {
   constructor(
-    @InjectRepository(PostsSaEntity)
-    private readonly postsSaRepository: Repository<PostsSaEntity>,
+    @InjectRepository(PostsEntity)
+    private readonly postsSaRepository: Repository<PostsEntity>,
   ) {}
 
-  async createSaPost(newPost: PostViewModels): Promise<PostsSaEntity> {
+  async createSaPost(newPost: PostViewModels): Promise<PostsEntity> {
     return this.postsSaRepository.save(newPost);
   }
 
   async getPostsForBlogs(
     postsForBlogQueryDto: PostsForBlogQueryDto,
     blogId: string,
-    userId: string,
-  ): Promise<PaginationView<PostsSaEntity[]>> {
+  ): Promise<PaginationView<PostViewModels[]>> {
     const pageSkip =
       postsForBlogQueryDto.pageSize * (postsForBlogQueryDto.pageNumber - 1);
 
-    const where: FindManyOptions['where'] = { blogId, userId }[0];
+    const where: FindManyOptions<PostsEntity>['where'] = { blogId }[0];
 
     const [posts, totalCount] = await Promise.all([
       this.postsSaRepository.find({
@@ -49,11 +48,25 @@ export class PostsSaService {
       page: postsForBlogQueryDto.pageNumber,
       pageSize: postsForBlogQueryDto.pageSize,
       totalCount: totalCount,
-      items: posts,
+      items: posts.map((el) => ({
+        id: el.id,
+        title: el.title,
+        shortDescription: el.shortDescription,
+        content: el.content,
+        blogId: el.blogId,
+        blogName: el.blogName,
+        createdAt: el.createdAt,
+        extendedLikesInfo: {
+          likesCount: 0,
+          dislikesCount: 0,
+          myStatus: myStatusView.None,
+          newestLikes: [],
+        },
+      })),
     };
   }
 
-  async findPostId(postId: string): Promise<PostsSaEntity> {
+  async findPostId(postId: string): Promise<PostsEntity> {
     return await this.postsSaRepository.findOneBy({ id: postId });
   }
 

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -24,9 +25,9 @@ import { PostsSaService } from './posts.sa.service';
 import { BlogsSaService } from './blogs.sa.service';
 import { UpdatePostsSaBlog } from '../use-cases/updatePostsSaBlog';
 import { DeletePostsSaBlog } from '../use-cases/deletePostsSaBlog';
-import { UserId } from '../../../decorators/user.decorator';
-import { BearerAuthUserId } from '../../../guards/bearer.auth';
-@UseGuards(BearerAuthUserId)
+import { BasicAuthGuard } from '../../../guards/basic.auth';
+
+@UseGuards(BasicAuthGuard)
 @Controller('sa/blogs')
 export class BlogsSaController {
   constructor(
@@ -37,31 +38,24 @@ export class BlogsSaController {
 
   @Post()
   @HttpCode(201)
-  async createSaBlog(
-    @Body() createBlogsSaDto: CreateBlogsSaDto,
-    @UserId() userId: string,
-  ) {
-    return await this.commandBus.execute(
-      new CreateSaBlogs(createBlogsSaDto, userId),
-    );
+  async createSaBlog(@Body() createBlogsSaDto: CreateBlogsSaDto) {
+    return await this.commandBus.execute(new CreateSaBlogs(createBlogsSaDto));
   }
 
   @Get()
   @HttpCode(200)
-  async getSaBlogs(
-    @Query() blogQueryDto: BlogQueryDto,
-    @UserId() userId: string,
-  ) {
-    return await this.blogsSaService.getSaBlogs(blogQueryDto, userId);
+  async getSaBlogs(@Query() blogQueryDto: BlogQueryDto) {
+    return await this.blogsSaService.getSaBlogs(blogQueryDto);
   }
 
   @Delete(':blogId')
   @HttpCode(204)
-  async deleteSaBlog(
-    @Param('blogId') blogId: string,
-    @UserId() userId: string,
-  ) {
-    return await this.commandBus.execute(new DeleteSaBlogs(blogId, userId));
+  async deleteSaBlog(@Param('blogId') blogId: string) {
+    try {
+      return await this.commandBus.execute(new DeleteSaBlogs(blogId));
+    } catch (e) {
+      throw new NotFoundException();
+    }
   }
 
   @Put(':blogId')
@@ -69,11 +63,14 @@ export class BlogsSaController {
   async updateSaBlog(
     @Param('blogId') blogId: string,
     @Body() createBlogsSaDto: CreateBlogsSaDto,
-    @UserId() userId: string,
   ) {
-    return await this.commandBus.execute(
-      new UpdateSaBlogs(blogId, createBlogsSaDto, userId),
-    );
+    try {
+      return await this.commandBus.execute(
+        new UpdateSaBlogs(blogId, createBlogsSaDto),
+      );
+    } catch (e) {
+      throw new NotFoundException();
+    }
   }
 
   @Post(':blogId/posts')
@@ -81,10 +78,9 @@ export class BlogsSaController {
   async createPostSaBlog(
     @Param('blogId') blogId: string,
     @Body() createPostForBlogsSaDto: CreatePostForBlogsSaDto,
-    @UserId() userId: string,
   ) {
     return await this.commandBus.execute(
-      new CreatePostSaBlogs(blogId, createPostForBlogsSaDto, userId),
+      new CreatePostSaBlogs(blogId, createPostForBlogsSaDto),
     );
   }
 
@@ -93,12 +89,10 @@ export class BlogsSaController {
   async getPostSaBlog(
     @Query() postsForBlogQueryDto: PostsForBlogQueryDto,
     @Param('blogId') blogId: string,
-    @UserId() userId: string,
   ) {
     return await this.postsSaService.getPostsForBlogs(
       postsForBlogQueryDto,
       blogId,
-      userId,
     );
   }
 
@@ -107,12 +101,15 @@ export class BlogsSaController {
   async updatePostsSaBlog(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
-    @UserId() userId: string,
     @Body() createPostForBlogsSaDto: CreatePostForBlogsSaDto,
   ) {
-    return await this.commandBus.execute(
-      new UpdatePostsSaBlog(blogId, postId, createPostForBlogsSaDto, userId),
-    );
+    try {
+      return await this.commandBus.execute(
+        new UpdatePostsSaBlog(blogId, postId, createPostForBlogsSaDto),
+      );
+    } catch (e) {
+      throw new NotFoundException();
+    }
   }
 
   @Delete(':blogId/posts/:postId')
@@ -120,10 +117,13 @@ export class BlogsSaController {
   async deletePostsSaBlog(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
-    @UserId() userId: string,
   ) {
-    return await this.commandBus.execute(
-      new DeletePostsSaBlog(blogId, postId, userId),
-    );
+    try {
+      return await this.commandBus.execute(
+        new DeletePostsSaBlog(blogId, postId),
+      );
+    } catch (e) {
+      throw new NotFoundException();
+    }
   }
 }

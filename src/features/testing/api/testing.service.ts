@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../../user/entity/user.entity';
 import { DeviceEntity } from '../../device/entity/device.entity';
 import { BlogsEntity } from '../../sa/entity/blogsEntity';
-import { PostsSaEntity } from '../../sa/entity/posts.sa.entity';
+import { PostsEntity } from '../../sa/entity/posts.sa.entity';
+import { CommentsEntity } from '../../comments/entity/commentsEntity';
+import { LikesEntity } from '../../likes/entity/likes.entity';
 
 @Injectable()
 export class TestingService {
@@ -15,8 +17,12 @@ export class TestingService {
     private readonly deviceRepository: Repository<DeviceEntity>,
     @InjectRepository(BlogsEntity)
     private readonly blogsSaRepository: Repository<BlogsEntity>,
-    @InjectRepository(PostsSaEntity)
-    private readonly postsSaRepository: Repository<PostsSaEntity>,
+    @InjectRepository(PostsEntity)
+    private readonly postsSaRepository: Repository<PostsEntity>,
+    @InjectRepository(LikesEntity)
+    private readonly likeRepository: Repository<LikesEntity>,
+    @InjectRepository(CommentsEntity)
+    private readonly repositoryComments: Repository<CommentsEntity>,
   ) {}
 
   async deleteAll(): Promise<boolean> {
@@ -25,6 +31,8 @@ export class TestingService {
       await this.deviceRepository.delete({});
       await this.blogsSaRepository.delete({});
       await this.postsSaRepository.delete({});
+      await this.repositoryComments.delete({});
+      await this.likeRepository.delete({});
       return true;
     } catch (e) {
       return false;

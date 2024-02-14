@@ -22,6 +22,6 @@ export class GetSaBlogsHandler implements IQueryHandler<GetSaBlogs> {
       sortDirection:
         query.blogQueryDto.sortDirection === 'asc' ? 'asc' : 'desc',
     };
-    return await this.blogsSaService.getSaBlogs(paginationBlogs, query.userId);
+    return await this.blogsSaService.getSaBlogs(paginationBlogs);
   }
 }

@@ -9,7 +9,6 @@ export class UpdatePostsSaBlog {
     public readonly blogId: string,
     public readonly postId: string,
     public readonly createPostForBlogsSaDto: CreatePostForBlogsSaDto,
-    public readonly userId: string,
   ) {}
 }
 
@@ -24,8 +23,6 @@ export class UpdatePostsSaBlogHandler
   async execute(command: UpdatePostsSaBlog) {
     const findBlog = await this.blogsSaService.findBlogId(command.blogId);
     if (!findBlog) throw new NotFoundException();
-
-    if (findBlog.userId !== command.userId) throw new ForbiddenException();
 
     const findPost = await this.postsSaService.findPostId(command.postId);
     if (!findPost) throw new NotFoundException();

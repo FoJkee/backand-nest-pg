@@ -4,7 +4,7 @@ import { FindBlogId } from '../use-cases/findBlogId';
 import { BlogQueryDto } from '../../sa/dto/blogs.sa.dto';
 import { BlogsService } from './blogs.service';
 import { PostsForBlogQueryDto } from '../../sa/dto/postsForBlog';
-import { PostsService } from './posts.service';
+import { PostsService } from '../../posts/api/posts.service';
 
 @Controller('blogs')
 export class BlogsController {

@@ -19,11 +19,13 @@ export class BlogsService {
   ): Promise<PaginationView<BlogsEntity[]>> {
     const searchNameTerm = blogQueryDto.searchNameTerm ?? '';
 
-    const pageSkip = +blogQueryDto.pageSize * (+blogQueryDto.pageNumber - 1);
+    const pageSkip = blogQueryDto.pageSize * (blogQueryDto.pageNumber - 1);
 
-    const where: FindManyOptions<BlogsEntity>['where'] = {
-      name: ILike(`%${searchNameTerm}%`),
-    }[0];
+    const where: FindManyOptions<BlogsEntity>['where'] = [
+      {
+        name: ILike(`%${searchNameTerm}%`),
+      },
+    ][0];
 
     const [blogs, totalCount] = await Promise.all([
       this.blogsSaRepository.find({
@@ -32,8 +34,8 @@ export class BlogsService {
           [blogQueryDto.sortBy]:
             blogQueryDto.sortDirection === 'asc' ? 'asc' : 'desc',
         },
-        take: +blogQueryDto.pageSize,
-        skip: +pageSkip,
+        take: blogQueryDto.pageSize,
+        skip: pageSkip,
       }),
       this.blogsSaRepository.count({ where }),
     ]);

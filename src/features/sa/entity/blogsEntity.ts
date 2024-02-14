@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { PostsSaEntity } from './posts.sa.entity';
+import { PostsEntity } from './posts.sa.entity';
 import { UserEntity } from '../../user/entity/user.entity';
 
 @Entity({ name: 'blogs' })
@@ -34,6 +34,6 @@ export class BlogsEntity extends BaseEntity {
   @Column({ type: 'boolean', default: false, name: 'ismembership' })
   isMembership: boolean;
 
-  @OneToMany(() => PostsSaEntity, (posts) => posts.blogId)
-  posts: PostsSaEntity[];
+  @OneToMany(() => PostsEntity, (posts) => posts.blogId)
+  posts: PostsEntity[];
 }

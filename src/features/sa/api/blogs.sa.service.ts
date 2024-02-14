@@ -19,17 +19,15 @@ export class BlogsSaService {
 
   async getSaBlogs(
     blogQueryDto: BlogQueryDto,
-    userId: string,
   ): Promise<PaginationView<BlogsEntity[]>> {
     const searchNameTerm = blogQueryDto.searchNameTerm
       ? blogQueryDto.searchNameTerm.toString()
       : '';
 
-    const pageSkip = +blogQueryDto.pageSize * (+blogQueryDto.pageNumber - 1);
+    const pageSkip = blogQueryDto.pageSize * (blogQueryDto.pageNumber - 1);
 
     const where: FindManyOptions<BlogsEntity>['where'] = {
       name: ILike(`%${searchNameTerm}%`),
-      userId,
     }[0];
 
     const [blogs, totalCount] = await Promise.all([
