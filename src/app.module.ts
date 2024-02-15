@@ -60,6 +60,8 @@ import { CommentsEntity } from './features/comments/entity/commentsEntity';
 import { LikesEntity } from './features/likes/entity/likes.entity';
 import { UpdatePostIdLikeHandler } from './features/posts/use-cases/updatePostIdLike';
 import { FindPostIdHandler } from './features/posts/use-cases/findPostId';
+import { DeleteCommentIdHandler } from './features/comments/use-cases/deleteCommentId';
+import { UpdateCommentIdHandler } from './features/comments/use-cases/updateCommentId';
 
 const services = [
   UserService,
@@ -109,9 +111,9 @@ const handlers = [
   CreateCommentsForPostHandler,
   UpdatePostIdLikeHandler,
   FindPostIdHandler,
+  DeleteCommentIdHandler,
+  UpdateCommentIdHandler,
 ];
-
-// const entity = [UserEntity, DeviceEntity];
 
 const validators = [UserFindEmailValidator, UserFindLoginValidator];
 const guards = [RefreshTokensGuard];

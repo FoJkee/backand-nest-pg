@@ -14,35 +14,40 @@ import { LikesEntity } from '../../likes/entity/likes.entity';
 
 @Entity({ name: 'comments' })
 export class CommentsEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar', name: 'content' })
   content: string;
 
   @ManyToOne(() => PostsEntity, (post) => post.comments)
-  @JoinColumn()
+  @JoinColumn({ name: 'postid' })
   postId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.comments)
-  @JoinColumn()
+  @JoinColumn({ name: 'userid' })
   userId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.comments)
-  @JoinColumn()
+  @JoinColumn({ name: 'userlogin' })
   userLogin: string;
 
-  @Column()
+  @Column({ type: 'varchar', name: 'createdat' })
   createdAt: string;
 
-  @Column()
+  @Column({ type: 'integer', name: 'likescount' })
   likesCount: number;
 
-  @Column()
+  @Column({ type: 'integer', name: 'dislikescount' })
   disLikesCount: number;
 
-  @Column()
-  status: myStatusView;
+  @Column({
+    type: 'varchar',
+    enum: myStatusView,
+    name: 'status',
+    default: myStatusView.None,
+  })
+  status: string;
 
   @OneToMany(() => LikesEntity, (like) => like.commentId)
   likes: LikesEntity[];
