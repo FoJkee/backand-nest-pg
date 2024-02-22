@@ -54,9 +54,18 @@ export class PostsController {
   }
 
   @Get(':postId/comments')
+  // @UseGuards(BearerAuthUserId)
   @HttpCode(200)
-  async getCommentsForPost(@Query() commentQueryDto: CommentQueryDto) {
-    return await this.commentsService.getCommentsForPost(commentQueryDto);
+  async getCommentsForPost(
+    @Query() commentQueryDto: CommentQueryDto,
+    @Param('postId') postId: string,
+    @UserId() userId: string,
+  ) {
+    return await this.commentsService.getCommentsForPost(
+      commentQueryDto,
+      postId,
+      userId,
+    );
   }
 
   @Put(':postId/like-status')

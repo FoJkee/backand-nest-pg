@@ -7,30 +7,41 @@ import { CommentsEntity } from '../entity/commentsEntity';
 import { CommentViewModels } from '../models/comment.models';
 import { myStatusView } from '../../sa/models/posts.sa.models';
 import { LikesEntity } from '../../likes/entity/likes.entity';
+import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
+import { PostsEntity } from '../../sa/entity/posts.sa.entity';
+import { UserService } from '../../user/api/user.service';
 
 @Injectable()
 export class CommentsService {
   constructor(
     @InjectRepository(CommentsEntity)
-    private readonly repositoryComments: Repository<CommentsEntity>,
+    private readonly commentsRepository: Repository<CommentsEntity>,
     @InjectRepository(LikesEntity)
     private readonly likeRepository: Repository<LikesEntity>,
+    private readonly userService: UserService,
   ) {}
 
   async createCommentsForPost(
     newComment: CommentViewModels,
   ): Promise<CommentsEntity> {
-    return await this.repositoryComments.save(newComment);
+    return await this.commentsRepository.save(newComment);
   }
 
   async getCommentsForPost(
     commentQueryDto: CommentQueryDto,
-  ): Promise<PaginationView<CommentsEntity[]>> {
+    postId: string,
+    userId: string,
+  ) {
+    const user = await this.userService.findUserId(userId);
+
     const pageSkip =
       commentQueryDto.pageSize * (commentQueryDto.pageNumber - 1);
 
+    const where: FindManyOptions<CommentsEntity>['where'] = { postId }[0];
+
     const [comment, totalCount] = await Promise.all([
-      this.repositoryComments.find({
+      this.commentsRepository.find({
+        where,
         order: {
           [commentQueryDto.sortBy]:
             commentQueryDto.sortDirection === 'asc' ? 'asc' : 'desc',
@@ -38,28 +49,59 @@ export class CommentsService {
         take: +commentQueryDto.pageSize,
         skip: +pageSkip,
       }),
-      this.repositoryComments.count({}),
+      this.commentsRepository.count({ where }),
     ]);
+
+    // const result = await Promise.all(
+    //   comment.map(async (com) => {
+    //     let myStatus = myStatusView.None;
+    //     if (user.id) {
+    //       const findUserLikeStatus = await this.likeRepository.findOneBy({
+    //         commentId: com.id,
+    //         userId: user.id,
+    //       });
+    //       if (findUserLikeStatus) {
+    //         myStatus = com.status
+    //           ? findUserLikeStatus.status
+    //           : myStatusView.None;
+    //       }
+    //     }
+    //     return { ...com, status: myStatus }[0];
+    //   }),
+    // );
 
     return {
       pagesCount: Math.ceil(totalCount / commentQueryDto.pageSize),
       page: commentQueryDto.pageNumber,
       pageSize: commentQueryDto.pageSize,
       totalCount: totalCount,
-      items: comment,
+      items: comment.map((el) => ({
+        id: el.id,
+        content: el.content,
+        commentatorInfo: {
+          userId: el.userId,
+          userLogin: el.userLogin,
+        },
+        createdAt: el.createdAt,
+        likesInfo: {
+          likesCount: el.likesCount,
+          dislikesCount: el.disLikesCount,
+          myStatus: el.status,
+        },
+      })),
     };
   }
 
   async getCommentsId(commentId: string) {
-    return await this.repositoryComments.findOneBy({ id: commentId });
+    return await this.commentsRepository.findOneBy({ id: commentId });
   }
 
   async deleteCommentId(commentId: string) {
-    return await this.repositoryComments.delete({ id: commentId });
+    return await this.commentsRepository.delete({ id: commentId });
   }
 
   async updateCommentId(commentId: string, commentDto: CommentDto) {
-    return await this.repositoryComments.update(
+    return await this.commentsRepository.update(
       { id: commentId },
       { content: commentDto.content },
     );
@@ -85,7 +127,7 @@ export class CommentsService {
     findComment.disLikesCount = disLikesCount;
     findComment.likesCount = likesCount;
 
-    await this.repositoryComments.update({ id: findComment.id }, { status });
+    await this.commentsRepository.update({ id: findComment.id }, { status });
     return;
   }
 }

@@ -19,7 +19,7 @@ export class DeleteCommentIdHandler
       command.commentId,
     );
     if (!findComment) throw new NotFoundException();
-    if (findComment.userId !== command.userId) throw new ForbiddenException();
+    // if (findComment.userId !== command.userId) throw new ForbiddenException();
     return await this.commentsService.deleteCommentId(command.commentId);
   }
 }

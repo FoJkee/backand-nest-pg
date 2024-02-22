@@ -62,6 +62,8 @@ import { UpdatePostIdLikeHandler } from './features/posts/use-cases/updatePostId
 import { FindPostIdHandler } from './features/posts/use-cases/findPostId';
 import { DeleteCommentIdHandler } from './features/comments/use-cases/deleteCommentId';
 import { UpdateCommentIdHandler } from './features/comments/use-cases/updateCommentId';
+import { CommentsController } from './features/comments/api/comments.controller';
+import { FindCommentHandler } from './features/comments/use-cases/findComment';
 
 const services = [
   UserService,
@@ -85,6 +87,7 @@ const controllers = [
   BlogsSaController,
   BlogsController,
   PostsController,
+  CommentsController,
 ];
 
 const handlers = [
@@ -113,6 +116,7 @@ const handlers = [
   FindPostIdHandler,
   DeleteCommentIdHandler,
   UpdateCommentIdHandler,
+  FindCommentHandler,
 ];
 
 const validators = [UserFindEmailValidator, UserFindLoginValidator];

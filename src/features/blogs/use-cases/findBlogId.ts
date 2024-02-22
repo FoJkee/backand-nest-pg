@@ -1,7 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { BlogsService } from '../api/blogs.service';
-import { BlogsSaService } from '../../sa/api/blogs.sa.service';
 
 export class FindBlogId {
   constructor(public readonly blogId: string) {}
