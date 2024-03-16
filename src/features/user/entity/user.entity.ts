@@ -44,6 +44,7 @@ export class UserEntity extends BaseEntity {
   posts: PostsEntity[];
 
   @OneToMany(() => CommentsEntity, (comment) => comment.userId)
+  @OneToMany(() => CommentsEntity, (comment) => comment.userLogin)
   comments: CommentsEntity[];
 
   @OneToMany(() => LikesEntity, (like) => like.userId)

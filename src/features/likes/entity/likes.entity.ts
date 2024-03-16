@@ -13,28 +13,24 @@ import { CommentsEntity } from '../../comments/entity/commentsEntity';
 
 @Entity({})
 export class LikesEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  status: myStatusView;
+  @Column({ type: 'varchar', name: 'status', enum: myStatusView })
+  status: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   createdAt: string;
 
   @ManyToOne(() => UserEntity, (user) => user.likes)
   @JoinColumn()
   userId: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.likes)
-  @JoinColumn()
-  userLogin: string;
-
   @ManyToOne(() => PostsEntity, (post) => post.likes)
   @JoinColumn()
   postId: string;
 
   @ManyToOne(() => CommentsEntity, (comment) => comment.likes)
-  @JoinColumn()
+  @JoinColumn({ name: 'commentid' })
   commentId: string;
 }

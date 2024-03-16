@@ -29,9 +29,11 @@ export class CommentsController {
 
   @Get(':commentId')
   @HttpCode(200)
-  async getCommentId(@Param('commentId') commentId: string) {
-    return await this.queryBus.execute(new FindComment(commentId));
-    // return await this.commentsService.getCommentsId(commentId);
+  async getCommentId(
+    @Param('commentId') commentId: string,
+    @UserId() userId: string,
+  ) {
+    return await this.queryBus.execute(new FindComment(commentId, userId));
   }
 
   @Delete(':commentId')
@@ -65,18 +67,18 @@ export class CommentsController {
     }
   }
 
-  @Put(':commentId/like-status')
-  @UseGuards(BearerAuthUserId)
-  @HttpCode(204)
-  async updateCommentIdLikeStatus(
-    @Param('commentId') commentId: string,
-    @UserId() userId: string,
-    @Body() likesDto: LikesDto,
-  ) {
-    return await this.commentsService.updateCommentIdLikeStatus(
-      commentId,
-      userId,
-      likesDto.likeStatus,
-    );
-  }
+  // @Put(':commentId/like-status')
+  // @UseGuards(BearerAuthUserId)
+  // @HttpCode(204)
+  // async updateCommentIdLikeStatus(
+  //   @Param('commentId') commentId: string,
+  //   @UserId() userId: string,
+  //   @Body() likesDto: LikesDto,
+  // ) {
+  //   return await this.commentsService.updateCommentIdLikeStatus(
+  //     commentId,
+  //     userId,
+  //     likesDto.likeStatus,
+  //   );
+  // }
 }

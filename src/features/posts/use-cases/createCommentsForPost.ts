@@ -49,20 +49,20 @@ export class CreateCommentsForPostHandler
 
     const result = await this.commentsService.createCommentsForPost(newComment);
     if (!result) throw new BadRequestException();
-    // return {
-    //   id: randomUUID(),
-    //   content: command.commentDto.content,
-    //   commentatorInfo: {
-    //     userId: user.id,
-    //     userLogin: user.login,
-    //   },
-    //   createdAt: new Date().toISOString(),
-    //   likesInfo: {
-    //     likesCount: 0,
-    //     dislikesCount: 0,
-    //     myStatus: myStatusView.None,
-    //   },
-    // };
-    return newComment;
+
+    return {
+      id: result.id,
+      content: result.content,
+      commentatorInfo: {
+        userId: user.id,
+        userLogin: user.login,
+      },
+      createdAt: result.createdAt.toString(),
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: myStatusView.None,
+      },
+    };
   }
 }

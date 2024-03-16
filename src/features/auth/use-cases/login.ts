@@ -5,11 +5,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../infrastructure/auth.service';
 import { DeviceType } from '../../../decorators/device.decorators';
 import { DeviceService } from '../../device/api/device.service';
-import { DeviceModels } from '../../device/dto/device.models';
 import * as bcrypt from 'bcrypt';
-import { UserId } from '../../../decorators/user.decorator';
-import { UserEntity } from '../../user/entity/user.entity';
-import { randomUUID } from 'crypto';
 
 export class Login {
   constructor(

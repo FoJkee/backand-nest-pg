@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentDto, CommentQueryDto } from '../dto/comments.dto';
-import { PaginationView } from '../../../setting/pagination.model';
 import { CommentsEntity } from '../entity/commentsEntity';
 import { CommentViewModels } from '../models/comment.models';
 import { myStatusView } from '../../sa/models/posts.sa.models';
 import { LikesEntity } from '../../likes/entity/likes.entity';
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
-import { PostsEntity } from '../../sa/entity/posts.sa.entity';
 import { UserService } from '../../user/api/user.service';
 
 @Injectable()
@@ -61,7 +59,7 @@ export class CommentsService {
     //         userId: user.id,
     //       });
     //       if (findUserLikeStatus) {
-    //         myStatus = com.status
+    //         myStatus = com.likes
     //           ? findUserLikeStatus.status
     //           : myStatusView.None;
     //       }
@@ -79,14 +77,12 @@ export class CommentsService {
         id: el.id,
         content: el.content,
         commentatorInfo: {
-          userId: el.userId,
-          userLogin: el.userLogin,
+          userId: user.id,
+          userLogin: user.login,
         },
         createdAt: el.createdAt,
         likesInfo: {
-          likesCount: el.likesCount,
-          dislikesCount: el.disLikesCount,
-          myStatus: el.status,
+          myStatus: el.likes,
         },
       })),
     };
@@ -107,27 +103,27 @@ export class CommentsService {
     );
   }
 
-  async updateCommentIdLikeStatus(
-    commentId: string,
-    userId: string,
-    status: myStatusView,
-  ) {
-    const findComment = await this.getCommentsId(commentId);
-
-    await this.likeRepository.update(
-      { commentId, userId },
-      { status, createdAt: new Date().toISOString },
-    );
-
-    const [likesCount, disLikesCount] = await Promise.all([
-      this.likeRepository.countBy({ commentId, status: myStatusView.Like }),
-      this.likeRepository.countBy({ commentId, status: myStatusView.DisLike }),
-    ]);
-
-    findComment.disLikesCount = disLikesCount;
-    findComment.likesCount = likesCount;
-
-    await this.commentsRepository.update({ id: findComment.id }, { status });
-    return;
-  }
+  // async updateCommentIdLikeStatus(
+  //   commentId: string,
+  //   userId: string,
+  //   status: myStatusView,
+  // ) {
+  //   const findComment = await this.getCommentsId(commentId);
+  //
+  //   await this.likeRepository.update(
+  //     { commentId, userId },
+  //     { status, createdAt: new Date().toISOString },
+  //   );
+  //
+  //   const [likesCount, disLikesCount] = await Promise.all([
+  //     this.likeRepository.countBy({ commentId, status: myStatusView.Like }),
+  //     this.likeRepository.countBy({ commentId, status: myStatusView.DisLike }),
+  //   ]);
+  //
+  //   findComment.disLikesCount = disLikesCount;
+  //   findComment.likesCount = likesCount;
+  //
+  //   await this.commentsRepository.update({ id: findComment.id }, { status });
+  //   return;
+  // }
 }
